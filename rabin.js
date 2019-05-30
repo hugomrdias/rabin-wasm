@@ -1,14 +1,12 @@
 var stream = require('readable-stream')
 var util = require('util')
-var rabin = require('bindings')('rabin')
+var RabinWasm = require('.')
 var BufferList = require('bl')
 var debug = require('debug')('rabin')
 
 module.exports = Rabin
 
-function Rabin (opts) {
-  if (!(this instanceof Rabin)) return new Rabin(opts)
-  if (!opts) opts = {}
+function Rabin (opts = {}) {
   stream.Duplex.call(this)
   this._readableState.highWaterMark = 16
   this._readableState.objectMode = true
@@ -16,8 +14,7 @@ function Rabin (opts) {
   var avgBits = +opts.bits || 12
   var min = +opts.min || 8 * 1024
   var max = +opts.max || 32 * 1024
-  this.rabin = rabin.rabin()
-  this.rabin.configure(avgBits, min, max)
+  this.rabin = new RabinWasm(avgBits, min, max)
   this.nextCb = null
   this.buffers = new BufferList()
   this.pending = []
@@ -60,14 +57,15 @@ Rabin.prototype._write = function (data, enc, cb) {
 
 Rabin.prototype._process = function (cb) {
   var drained = true
-  var sizes = []
-  this.rabin.fingerprint(this.pending, sizes)
+  var sizes = this.rabin.fingerprint(Buffer.concat(this.pending))
+  
   this.pending = []
 
   debug('chunks', sizes)
 
   for (var i = 0; i < sizes.length; i++) {
     var size = sizes[i]
+    if(size === 0) break
     var buf = this.buffers.slice(0, size)
     this.buffers.consume(size)
     drained = this.push(buf)

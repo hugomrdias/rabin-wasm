@@ -1,6 +1,4 @@
-// The entry file of your WebAssembly module.
 import "allocator/tlsf";
-// import "collector/itcm";
 // import { log } from '../node_modules/as-pect/assembly/internal/log'
 export { memory }
 const WINSIZE = 64
@@ -8,6 +6,7 @@ let tables_initialized: bool = false
 let modTable = new Uint64Array(256)
 let outTable = new Uint64Array(256)
 
+@inline
 export function degree(polynom: u64): i32 {
   var mask: u64 = 0x8000000000000000;
 
@@ -23,6 +22,7 @@ export function degree(polynom: u64): i32 {
 }
 
 // Mod calculates the remainder of x divided by p.
+@inline
 export function mod(x: u64,  p: u64): u64 {
   while (degree(x) >= degree(p)) {
       var shift = degree(x) - degree(p);
@@ -32,6 +32,7 @@ export function mod(x: u64,  p: u64): u64 {
   return x;
 }
 
+@inline
 function append_byte(hash: u64, b: u8, pol: u64): u64 {
   hash <<= 8;
   hash |= <u64>b;
@@ -39,6 +40,7 @@ function append_byte(hash: u64, b: u8, pol: u64): u64 {
   return mod(hash, pol);
 }
 
+@inline
 function calc_tables(h: rabin_t): void {
   // calculate table for sliding out bytes. The byte to slide out is used as
   // the index for the table, the value contains the following:
@@ -75,6 +77,7 @@ function calc_tables(h: rabin_t): void {
   }
 }
 
+@inline
 function rabin_append(h: rabin_t,  b: usize): void {
   var index: u8 = <u8>(h.digest >> h.polynomial_shift);
   h.digest <<= 8;
@@ -82,6 +85,7 @@ function rabin_append(h: rabin_t,  b: usize): void {
   h.digest ^= modTable[index];
 }
 
+@inline
 function rabin_slide(h: rabin_t, b: usize): void {
   var out: u8 = h.window[h.wpos];
   h.window[h.wpos] = b;
@@ -90,6 +94,7 @@ function rabin_slide(h: rabin_t, b: usize): void {
   rabin_append(h, b);
 }
 
+@inline
 function rabin_reset(h: rabin_t): void {
   for (let i = 0; i < WINSIZE; i++){
     h.window[i] = 0;
@@ -102,6 +107,7 @@ function rabin_reset(h: rabin_t): void {
   rabin_slide(h, 1);
 }
 
+@inline
 function rabin_next_chunk(h: rabin_t, buf: usize, len: i32): i32 {
   for (let i = 0; i < len; i++) {
       let b = load<u8>(buf + i)
@@ -118,7 +124,6 @@ function rabin_next_chunk(h: rabin_t, buf: usize, len: i32): i32 {
           rabin_reset(h);
           return i+1;
       }
-
   }
 
   return -1;
@@ -138,8 +143,6 @@ function rabin_init(h: rabin_t): rabin_t {
 }
 
 
-@external("linked", "getLengths")
-declare function getLengths(pointer: usize, length: i32): void;
 export class rabin_t {
   window: Uint8Array = new Uint8Array(WINSIZE)
   wpos: i32
@@ -172,9 +175,8 @@ export class rabin_t {
     rabin_init(this)
   }
 
-  fingerprint(buf: Uint8Array): void {
+  fingerprint(buf: Uint8Array, lengths: Int32Array): void {
     let len = buf.length;
-    let lengths = new Array<i32>(35)
     let chunk_idx = 0;
     let ptr = buf.buffer.data
 
@@ -189,7 +191,5 @@ export class rabin_t {
       
       lengths[chunk_idx++] = <i32>this.chunk_length
     }
-    getLengths(lengths.buffer_.data, lengths.length)
-
   }
 }

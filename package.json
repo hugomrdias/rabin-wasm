@@ -1,6 +1,7 @@
 {
-  "name": "test-as",
-  "version": "1.0.0",
+  "name": "rabin-wasm",
+  "version": "0.0.1",
+  "bin": "cli.js",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,6 +14,10 @@
   "license": "ISC",
   "dependencies": {
     "as-pect": "github:jtenner/as-pect",
-    "assemblyscript": "github:assemblyscript/assemblyscript"
+    "assemblyscript": "github:assemblyscript/assemblyscript",
+    "bl": "^1.0.0",
+    "debug": "^4.1.1",
+    "minimist": "^1.2.0",
+    "readable-stream": "^2.0.4"
   }
 }
