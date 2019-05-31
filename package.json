@@ -1,6 +1,6 @@
 {
   "name": "rabin-wasm",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "bin": "cli/bin.js",
   "description": "",
   "main": "src/index.js",
