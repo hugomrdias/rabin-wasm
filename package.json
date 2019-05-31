@@ -4,6 +4,9 @@
   "bin": "cli/bin.js",
   "description": "",
   "main": "src/index.js",
+  "browser": {
+    "./dist/rabin-wasm.node.js": "./dist/rabin-wasm.js"
+  },
   "scripts": {
     "test": "asp",
     "asbuild:untouched": "asc assembly/index.ts -b build/untouched.wasm -t build/untouched.wat --sourceMap --validate --debug",
@@ -19,6 +22,7 @@
     "browserify": "^16.2.3",
     "debug": "^4.1.1",
     "minimist": "^1.2.0",
+    "node-fetch": "^2.6.0",
     "readable-stream": "^2.0.4"
   },
   "devDependencies": {

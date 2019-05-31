@@ -4,7 +4,9 @@ process.title = 'wasm2js'
 
 const minimist = require('minimist')
 const fs = require('fs')
+const path = require('path')
 const wasm2js = require('./wasm2js.js')
+const wasm2jsNode = require('./wasm2js.node.js')
 
 const argv = minimist(process.argv.slice(2), {
   alias: {output: 'o', watch: 'w'},
@@ -33,6 +35,10 @@ build()
 function build() {
   const wasmBuffer = fs.readFileSync(inp)
   const src = wasm2js(wasmBuffer)
-  if (argv.output) fs.writeFileSync(argv.output, src)
+  const srcNode = wasm2jsNode(wasmBuffer)
+  if (argv.output) {
+    fs.writeFileSync(argv.output, src)
+    fs.writeFileSync(path.join(path.dirname(argv.output), path.basename(argv.output, 'js') + 'node.js'), srcNode)
+  }
   else process.stdout.write(src)
 }
