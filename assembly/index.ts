@@ -1,4 +1,4 @@
-import "allocator/tlsf";
+import "allocator/arena";
 // import { log } from '../node_modules/as-pect/assembly/internal/log'
 export { memory }
 const WINSIZE = 64
@@ -142,7 +142,6 @@ function rabin_init(h: rabin_t): rabin_t {
   return h;
 }
 
-
 export class rabin_t {
   window: Uint8Array = new Uint8Array(WINSIZE)
   wpos: i32
@@ -179,7 +178,6 @@ export class rabin_t {
     let len = buf.length;
     let chunk_idx = 0;
     let ptr = buf.buffer.data
-
     while (1) {
       var remaining = rabin_next_chunk(this, ptr, len);
       if (remaining < 0) {
@@ -188,8 +186,8 @@ export class rabin_t {
 
       len -= remaining;
       ptr += remaining;
-      
-      lengths[chunk_idx++] = <i32>this.chunk_length
+      let c = chunk_idx++
+      unchecked(lengths[c] = <i32>this.chunk_length)
     }
   }
 }

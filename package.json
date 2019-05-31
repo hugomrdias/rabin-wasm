@@ -1,23 +1,28 @@
 {
   "name": "rabin-wasm",
   "version": "0.0.1",
-  "bin": "cli.js",
+  "bin": "cli/bin.js",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "asp",
     "asbuild:untouched": "asc assembly/index.ts -b build/untouched.wasm -t build/untouched.wat --sourceMap --validate --debug",
     "asbuild:optimized": "asc assembly/index.ts -b build/optimized.wasm -t build/optimized.wat --sourceMap --validate --optimize",
-    "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized"
+    "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
+    "build": "asc assembly/index.ts -b dist/rabin.wasm --sourceMap --validate --optimize && ./tools/wasm2js dist/rabin.wasm -o dist/rabin-wasm.js && browserify src/index.js -s Rabin -o dist/rabin.umd.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Hugo Dias",
+  "license": "MIT",
   "dependencies": {
-    "as-pect": "github:jtenner/as-pect",
-    "assemblyscript": "github:assemblyscript/assemblyscript",
     "bl": "^1.0.0",
+    "browserify": "^16.2.3",
     "debug": "^4.1.1",
     "minimist": "^1.2.0",
     "readable-stream": "^2.0.4"
+  },
+  "devDependencies": {
+    "as-pect": "github:jtenner/as-pect",
+    "assemblyscript": "github:assemblyscript/assemblyscript",
+    "size-limit": "^1.3.5"
   }
 }
