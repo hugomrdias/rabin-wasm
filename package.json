@@ -3,13 +3,14 @@
   "version": "0.0.1",
   "bin": "cli/bin.js",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "asp",
     "asbuild:untouched": "asc assembly/index.ts -b build/untouched.wasm -t build/untouched.wat --sourceMap --validate --debug",
     "asbuild:optimized": "asc assembly/index.ts -b build/optimized.wasm -t build/optimized.wat --sourceMap --validate --optimize",
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
-    "build": "asc assembly/index.ts -b dist/rabin.wasm -d dist/rabin.d.ts --sourceMap --validate --optimize && ./tools/wasm2js dist/rabin.wasm -o dist/rabin-wasm.js && browserify src/index.js -s Rabin -o dist/rabin.umd.js"
+    "build": "asc assembly/index.ts -b dist/rabin.wasm -d dist/rabin.d.ts --sourceMap --validate -O3z && ./tools/wasm2js dist/rabin.wasm -o dist/rabin-wasm.js && browserify src/index.js -s Rabin -o dist/rabin.umd.js",
+    "size": "size-limit dist/rabin.umd.js"
   },
   "author": "Hugo Dias",
   "license": "MIT",

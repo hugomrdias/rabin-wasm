@@ -2,7 +2,6 @@ import "allocator/arena";
 
 export { memory }
 
-const WINSIZE = 64
 let tables_initialized: bool = false
 let modTable = new Uint64Array(256)
 let outTable = new Uint64Array(256)
@@ -58,7 +57,7 @@ function calc_tables(h: Rabin): void {
       let hash: u64 = 0;
 
       hash = append_byte(hash, <u8>b, h.polynomial);
-      for (let i = 0; i < WINSIZE-1; i++) {
+      for (let i = 0; i < h.window_size-1; i++) {
           hash = append_byte(hash, 0, h.polynomial);
       }
       outTable[b] = hash;
@@ -91,13 +90,13 @@ function rabin_slide(h: Rabin, b: usize): void {
   var out: u8 = h.window[h.wpos];
   h.window[h.wpos] = b;
   h.digest = (h.digest ^ outTable[out]);
-  h.wpos = (h.wpos + 1) % WINSIZE;
+  h.wpos = (h.wpos + 1) % h.window_size;
   rabin_append(h, b);
 }
 
 @inline
 function rabin_reset(h: Rabin): void {
-  for (let i = 0; i < WINSIZE; i++){
+  for (let i = 0; i < h.window_size; i++){
     h.window[i] = 0;
   }
   h.digest = 0;
@@ -144,7 +143,8 @@ function rabin_init(h: Rabin): Rabin {
 }
 
 export class Rabin {
-  window: Uint8Array = new Uint8Array(WINSIZE)
+  window: Uint8Array
+  window_size: i32
   wpos: i32
   count: u64
   pos: u64
@@ -161,10 +161,12 @@ export class Rabin {
   maxsize: u64
   mask: u64
 
-  constructor(average_bits: u32, minsize: u32, maxsize: u32) {
+  constructor(average_bits: u32, minsize: u32, maxsize: u32, window_size: i32) {
     this.average_bits = <u64>average_bits
     this.minsize = <u64>minsize
     this.maxsize = <u64>maxsize
+    this.window = new Uint8Array(window_size)
+    this.window_size = window_size
 
     // hardcoded
     this.mask = (1<<this.average_bits)-1

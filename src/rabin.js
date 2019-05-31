@@ -12,12 +12,12 @@ class Rabin {
      * @param { import("./../dist/rabin").default } asModule
      * @memberof Rabin
      */
-    constructor(bits = 12, min = 8 * 1024, max = 32 * 1024, asModule) {
+    constructor(bits = 12, min = 8 * 1024, max = 32 * 1024, windowSize = 64, asModule) {
         this.bits = bits
         this.min = min
         this.max = max
         this.asModule = asModule
-        this.rabin = new asModule.Rabin(bits, min, max)
+        this.rabin = new asModule.Rabin(bits, min, max, windowSize)
     }
 
     /**
