@@ -1,6 +1,7 @@
 import "allocator/arena";
-// import { log } from '../node_modules/as-pect/assembly/internal/log'
+
 export { memory }
+
 const WINSIZE = 64
 let tables_initialized: bool = false
 let modTable = new Uint64Array(256)
@@ -41,7 +42,7 @@ function append_byte(hash: u64, b: u8, pol: u64): u64 {
 }
 
 @inline
-function calc_tables(h: rabin_t): void {
+function calc_tables(h: Rabin): void {
   // calculate table for sliding out bytes. The byte to slide out is used as
   // the index for the table, the value contains the following:
   // out_table[b] = Hash(b || 0 ||        ...        || 0)
@@ -78,7 +79,7 @@ function calc_tables(h: rabin_t): void {
 }
 
 @inline
-function rabin_append(h: rabin_t,  b: usize): void {
+function rabin_append(h: Rabin,  b: usize): void {
   var index: u8 = <u8>(h.digest >> h.polynomial_shift);
   h.digest <<= 8;
   h.digest |= <u64>b;
@@ -86,7 +87,7 @@ function rabin_append(h: rabin_t,  b: usize): void {
 }
 
 @inline
-function rabin_slide(h: rabin_t, b: usize): void {
+function rabin_slide(h: Rabin, b: usize): void {
   var out: u8 = h.window[h.wpos];
   h.window[h.wpos] = b;
   h.digest = (h.digest ^ outTable[out]);
@@ -95,7 +96,7 @@ function rabin_slide(h: rabin_t, b: usize): void {
 }
 
 @inline
-function rabin_reset(h: rabin_t): void {
+function rabin_reset(h: Rabin): void {
   for (let i = 0; i < WINSIZE; i++){
     h.window[i] = 0;
   }
@@ -108,7 +109,7 @@ function rabin_reset(h: rabin_t): void {
 }
 
 @inline
-function rabin_next_chunk(h: rabin_t, buf: usize, len: i32): i32 {
+function rabin_next_chunk(h: Rabin, buf: usize, len: i32): i32 {
   for (let i = 0; i < len; i++) {
       let b = load<u8>(buf + i)
 
@@ -129,7 +130,7 @@ function rabin_next_chunk(h: rabin_t, buf: usize, len: i32): i32 {
   return -1;
 }
 
-function rabin_init(h: rabin_t): rabin_t {
+function rabin_init(h: Rabin): Rabin {
   if (!tables_initialized) {
       calc_tables(h);
       tables_initialized = true;
@@ -142,7 +143,7 @@ function rabin_init(h: rabin_t): rabin_t {
   return h;
 }
 
-export class rabin_t {
+export class Rabin {
   window: Uint8Array = new Uint8Array(WINSIZE)
   wpos: i32
   count: u64

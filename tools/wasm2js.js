@@ -20,7 +20,7 @@ module.exports = function wasm2js(wasmBuf) {
       if (!loadWebAssembly.supported) return null
       
       var wasm = new Uint8Array([${wasmBuf.join(',')}])
-      
+      // make it work async because browsers throw when a wasm module is bigger than 4kb and load sync
       return instantiateStreaming(new Response(new Blob([wasm], {type: 'application/wasm'})), imp)
     }
     module.exports = loadWebAssembly
