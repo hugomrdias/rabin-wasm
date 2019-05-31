@@ -7,6 +7,11 @@
   "browser": {
     "./dist/rabin-wasm.node.js": "./dist/rabin-wasm.js"
   },
+  "files": [
+    "src",
+    "dist",
+    "cli"
+  ],
   "scripts": {
     "test": "asp",
     "asbuild:untouched": "asc assembly/index.ts -b build/untouched.wasm -t build/untouched.wat --sourceMap --validate --debug",
