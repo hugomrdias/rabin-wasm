@@ -21,6 +21,13 @@
     "size": "size-limit dist/rabin.umd.js",
     "prepublishOnly": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hugomrdias/rabin-wasm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hugomrdias/rabin-wasm/issues"
+  },
   "author": "Hugo Dias",
   "license": "MIT",
   "dependencies": {
