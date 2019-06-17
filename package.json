@@ -17,7 +17,6 @@
     "cli"
   ],
   "scripts": {
-    "test": "asp",
     "asbuild:untouched": "asc assembly/index.ts -b build/untouched.wasm -t build/untouched.wat --sourceMap --validate --debug",
     "asbuild:optimized": "asc assembly/index.ts -b build/optimized.wasm -t build/optimized.wat --sourceMap --validate --optimize",
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
@@ -35,7 +34,7 @@
     "readable-stream": "^2.0.4"
   },
   "devDependencies": {
-    "as-pect": "github:jtenner/as-pect",
+    "as-pect": "github:jtenner/as-pect#52ed8fd923d0ad96a07fe1b52de6c51d49e3b246",
     "benchmark": "^2.1.4",
     "iso-random-stream": "^1.1.0",
     "long": "^4.0.0",
