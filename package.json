@@ -1,8 +1,12 @@
 {
   "name": "rabin-wasm",
-  "version": "0.0.4",
+  "version": "0.0.5",
+  "description": "Rabin fingerprinting implemented in AssemblyScript",
+  "homepage": "https://github.com/hugomrdias/rabin-wasm",
+  "bugs": "https://github.com/hugomrdias/rabin-wasm/issues",
+  "license": "MIT",
+  "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
   "bin": "cli/bin.js",
-  "description": "",
   "main": "src/index.js",
   "browser": {
     "./dist/rabin-wasm.node.js": "./dist/rabin-wasm.js"
@@ -13,7 +17,6 @@
     "cli"
   ],
   "scripts": {
-    "test": "asp",
     "asbuild:untouched": "asc assembly/index.ts -b build/untouched.wasm -t build/untouched.wat --sourceMap --validate --debug",
     "asbuild:optimized": "asc assembly/index.ts -b build/optimized.wasm -t build/optimized.wat --sourceMap --validate --optimize",
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
@@ -31,7 +34,7 @@
   "author": "Hugo Dias",
   "license": "MIT",
   "dependencies": {
-    "assemblyscript": "github:assemblyscript/assemblyscript",
+    "assemblyscript": "github:assemblyscript/assemblyscript#v0.6",
     "bl": "^1.0.0",
     "browserify": "^16.2.3",
     "debug": "^4.1.1",
@@ -40,7 +43,7 @@
     "readable-stream": "^2.0.4"
   },
   "devDependencies": {
-    "as-pect": "github:jtenner/as-pect",
+    "as-pect": "github:jtenner/as-pect#52ed8fd923d0ad96a07fe1b52de6c51d49e3b246",
     "benchmark": "^2.1.4",
     "iso-random-stream": "^1.1.0",
     "long": "^4.0.0",
