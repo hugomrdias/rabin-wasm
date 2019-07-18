@@ -20,18 +20,19 @@
   ],
   "scripts": {
     "asbuild:untouched": "asc assembly/index.ts -b build/untouched.wasm -t build/untouched.wat --sourceMap --validate --debug",
-    "asbuild:optimized": "asc assembly/index.ts -b build/optimized.wasm -t build/optimized.wat --sourceMap --validate --optimize",
+    "asbuild:optimized": "asc assembly/index.ts -b build/optimized.wasm -t build/optimized.wat --sourceMap --validate -O3",
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
     "build": "asc assembly/index.ts -b dist/rabin.wasm -d dist/rabin.d.ts --sourceMap --validate -O3z && ./tools/wasm2js dist/rabin.wasm -o dist/rabin-wasm.js && browserify src/index.js -s Rabin -o dist/rabin.umd.js",
     "size": "size-limit dist/rabin.umd.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "asp"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hugomrdias/rabin-wasm.git"
   },
   "dependencies": {
-    "assemblyscript": "github:assemblyscript/assemblyscript#v0.6",
+    "assemblyscript": "github:assemblyscript/assemblyscript",
     "bl": "^1.0.0",
     "browserify": "^16.2.3",
     "debug": "^4.1.1",
@@ -40,7 +41,7 @@
     "readable-stream": "^2.0.4"
   },
   "devDependencies": {
-    "as-pect": "github:jtenner/as-pect#52ed8fd923d0ad96a07fe1b52de6c51d49e3b246",
+    "@as-pect/cli": "^2.2.0",
     "benchmark": "^2.1.4",
     "iso-random-stream": "^1.1.0",
     "long": "^4.0.0",
