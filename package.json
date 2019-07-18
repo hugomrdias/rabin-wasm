@@ -1,11 +1,13 @@
 {
   "name": "rabin-wasm",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Rabin fingerprinting implemented in AssemblyScript",
   "homepage": "https://github.com/hugomrdias/rabin-wasm",
-  "bugs": "https://github.com/hugomrdias/rabin-wasm/issues",
+  "bugs": {
+    "url": "https://github.com/hugomrdias/rabin-wasm/issues"
+  },
   "license": "MIT",
-  "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
+  "author": "Hugo Dias",
   "bin": "cli/bin.js",
   "main": "src/index.js",
   "browser": {
@@ -28,11 +30,6 @@
     "type": "git",
     "url": "git+https://github.com/hugomrdias/rabin-wasm.git"
   },
-  "bugs": {
-    "url": "https://github.com/hugomrdias/rabin-wasm/issues"
-  },
-  "author": "Hugo Dias",
-  "license": "MIT",
   "dependencies": {
     "assemblyscript": "github:assemblyscript/assemblyscript#v0.6",
     "bl": "^1.0.0",
