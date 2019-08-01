@@ -23,7 +23,8 @@ describe("rabin degree", (): void => {
   it("fingerprint", (): void => {
     let r = new Rabin(14, 1 * 8, 2 * 8, 64)
     let file = getFile()
-    r.fingerprint(file, new Int32Array(file.length/8))
+    let result = r.fingerprint(file)
+    // todo: inspect result
   });
 
 });
