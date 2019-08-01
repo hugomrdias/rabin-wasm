@@ -33,7 +33,6 @@
   "dependencies": {
     "assemblyscript": "github:assemblyscript/assemblyscript#v0.6",
     "bl": "^1.0.0",
-    "browserify": "^16.3.0",
     "debug": "^4.1.1",
     "minimist": "^1.2.0",
     "node-fetch": "^2.6.0",
@@ -42,6 +41,7 @@
   "devDependencies": {
     "as-pect": "github:jtenner/as-pect#52ed8fd923d0ad96a07fe1b52de6c51d49e3b246",
     "benchmark": "^2.1.4",
+    "browserify": "^16.3.0",
     "iso-random-stream": "^1.1.0",
     "long": "^4.0.0",
     "np": "^5.0.2",
