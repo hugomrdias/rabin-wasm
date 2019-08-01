@@ -1,6 +1,6 @@
 {
   "name": "rabin-wasm",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Rabin fingerprinting implemented in AssemblyScript",
   "homepage": "https://github.com/hugomrdias/rabin-wasm",
   "bugs": {
