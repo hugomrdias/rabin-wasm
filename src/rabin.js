@@ -28,28 +28,19 @@ class Rabin {
      * @memberof Rabin
      */
     fingerprint(buf) {
-        const lengths = new Int32Array(Math.ceil(buf.length/this.min))
-        const lengthsPtr = this.asModule.newArray(lengths)
-        const pointer = this.asModule.newArray(buf)
+        const u8arraytype = this.asModule.getUint8ArrayTypeId()
+        const pointer = this.asModule.__retain(this.asModule.__allocArray(u8arraytype, buf))
 
         // run finderprint
-        this.rabin.fingerprint(pointer, lengthsPtr)
+        const processedPointer = this.rabin.fingerprint(pointer)
 
-        const processed = this.asModule.getArray(Int32Array, lengthsPtr)
+        const processed = this.asModule.__getArray(processedPointer)
 
-        //free memory
-        this.asModule.freeArray(lengthsPtr)
-        this.asModule.freeArray(pointer)
+        // release memory
+        this.asModule.__release(pointer)
+        this.asModule.__release(processedPointer)
 
-        // TODO: remove this. @see https://github.com/ipfs/js-ipfs/issues/2118#issuecomment-497722625
-        // clean extra 0s in the array
-        const cleanArr = []
-        for (let i = 0; i < processed.length; i++) {
-            if(processed[i] === 0) break
-            cleanArr[i] = processed[i];
-        }
-
-        return cleanArr
+        return processed
     }
 }
 

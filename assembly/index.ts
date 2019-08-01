@@ -1,5 +1,3 @@
-import "allocator/arena";
-
 export { memory }
 
 let tables_initialized: bool = false
@@ -177,10 +175,11 @@ export class Rabin {
     rabin_init(this)
   }
 
-  fingerprint(buf: Uint8Array, lengths: Int32Array): void {
+  fingerprint(buf: Uint8Array): i32[] {
     let len = buf.length;
-    let chunk_idx = 0;
-    let ptr = buf.buffer.data
+    let ptr = changetype<usize>(buf.buffer)
+    let result = new Array<i32>(0);
+
     while (1) {
       var remaining = rabin_next_chunk(this, ptr, len);
       if (remaining < 0) {
@@ -189,8 +188,12 @@ export class Rabin {
 
       len -= remaining;
       ptr += remaining;
-      let c = chunk_idx++
-      unchecked(lengths[c] = <i32>this.chunk_length)
+      result.push(<i32>this.chunk_length);
     }
+    return result;
   }
+}
+
+export function getUint8ArrayTypeId(): i32 {
+  return idof<Uint8Array>();
 }
