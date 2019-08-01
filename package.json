@@ -19,12 +19,18 @@
     "cli"
   ],
   "scripts": {
+<<<<<<< HEAD
     "asbuild:untouched": "asc assembly/index.ts -b build/untouched.wasm -t build/untouched.wat --sourceMap --validate --debug --runtime stub",
     "asbuild:optimized": "asc assembly/index.ts -b build/optimized.wasm -t build/optimized.wat --sourceMap --validate --optimize --runtime stub",
+=======
+    "asbuild:untouched": "asc assembly/index.ts -b build/untouched.wasm -t build/untouched.wat --sourceMap --validate --debug",
+    "asbuild:optimized": "asc assembly/index.ts -b build/optimized.wasm -t build/optimized.wat --sourceMap --validate -O3",
+>>>>>>> b3d2db982fd09d826c66c6ccf3d7f953f03e1407
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
     "build": "asc assembly/index.ts -b dist/rabin.wasm -d dist/rabin.d.ts --sourceMap --validate -O3z && ./tools/wasm2js dist/rabin.wasm -o dist/rabin-wasm.js && browserify src/index.js -s Rabin -o dist/rabin.umd.js",
     "size": "size-limit dist/rabin.umd.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "asp"
   },
   "repository": {
     "type": "git",
@@ -32,15 +38,24 @@
   },
   "dependencies": {
     "assemblyscript": "github:assemblyscript/assemblyscript",
+<<<<<<< HEAD
     "bl": "^3.0.0",
     "browserify": "^16.3.0",
+=======
+    "bl": "^1.0.0",
+    "browserify": "^16.2.3",
+>>>>>>> b3d2db982fd09d826c66c6ccf3d7f953f03e1407
     "debug": "^4.1.1",
     "minimist": "^1.2.0",
     "node-fetch": "^2.6.0",
     "readable-stream": "^3.4.0"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "@as-pect/cli": "2.3.1",
+=======
+    "@as-pect/cli": "^2.2.0",
+>>>>>>> b3d2db982fd09d826c66c6ccf3d7f953f03e1407
     "benchmark": "^2.1.4",
     "iso-random-stream": "^1.1.0",
     "long": "^4.0.0",
