@@ -29,13 +29,15 @@ class Rabin {
      */
     fingerprint(buf) {
         const lengths = new Int32Array(Math.ceil(buf.length/this.min))
-        const lengthsPtr = this.asModule.newArray(lengths)
-        const pointer = this.asModule.newArray(buf)
+        const u8arraytype = this.asModule.getUint8ArrayTypeId()
+        const i32arraytype = this.asModule.getInt32ArrayTypeId()
+        const lengthsPtr = this.asModule.__retain(this.asModule.__allocArray(i32arraytype, lengths))
+        const pointer = this.asModule.__retain(this.asModule.__allocArray(u8arraytype, buf))
 
         // run finderprint
         this.rabin.fingerprint(pointer, lengthsPtr)
 
-        const processed = this.asModule.getArray(Int32Array, lengthsPtr)
+        const processed = this.asModule.__getArray(lengthsPtr)
 
         //free memory
         this.asModule.freeArray(lengthsPtr)
@@ -45,9 +47,13 @@ class Rabin {
         // clean extra 0s in the array
         const cleanArr = []
         for (let i = 0; i < processed.length; i++) {
-            if(processed[i] === 0) break
+            if (processed[i] === 0) break
             cleanArr[i] = processed[i];
         }
+
+        // release memory
+        this.asModule.__release(lengthsPtr)
+        this.asModule.__release(pointer)
 
         return cleanArr
     }

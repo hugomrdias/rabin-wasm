@@ -1,8 +1,14 @@
 import { degree, mod, Rabin } from '../index'
 
+function create<T>(values: valueof<T>[]): T {
+  let result = instantiate<T>(values.length);
+  for (let i = 0; i < values.length; i++) result[i] = values[i];
+  return result;
+}
 
-@external("linked", "getFile")
-declare function getFile(): Uint8Array;
+function getFile(): Uint8Array {
+  return create<Uint8Array>([1,2,3,4,5,5,67,6,7,9]);
+}
 
 
 describe("rabin degree", (): void => {
