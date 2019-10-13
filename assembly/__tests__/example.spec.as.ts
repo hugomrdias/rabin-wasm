@@ -10,7 +10,7 @@ describe("rabin degree", () => {
   });
 
   it("fingerprint", () => {
-    let r = new Rabin(14, 1 * 8, 2 * 8, 64);
+    let r = new Rabin(14, 1 * 8, 2 * 8);
     let file = new Uint8Array(10);
     file[0] = 1;
     file[1] = 2;

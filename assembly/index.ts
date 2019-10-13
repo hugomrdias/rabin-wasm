@@ -1,6 +1,8 @@
 export const Int32Array_ID = idof<Int32Array>();
 export const Uint8Array_ID = idof<Uint8Array>();
 
+const WINDOW_SIZE = 64;
+
 let tables_initialized = false;
 let modTable = new Uint64Array(256);
 let outTable = new Uint64Array(256);
@@ -52,7 +54,7 @@ function calc_tables(h: Rabin): void {
     let hash: u64 = 0;
 
     hash = append_byte(hash, <u8>b, polynomial);
-    for (let i = 0, len = h.window_size - 1; i < len; i++) {
+    for (let i = 0; i < WINDOW_SIZE - 1; i++) {
       hash = append_byte(hash, 0, polynomial);
     }
     unchecked(outTable[b] = hash);
@@ -86,13 +88,13 @@ function rabin_slide(h: Rabin, b: u8): void {
   var out = h.window[wpos];
   h.window[wpos] = b;
   h.digest ^= outTable[out];
-  h.wpos = (wpos + 1) % h.window_size;
+  h.wpos = (wpos + 1) % WINDOW_SIZE;
   rabin_append(h, b);
 }
 
 @inline
 function rabin_reset(h: Rabin): void {
-  for (let i = 0, len = h.window_size; i < len; i++){
+  for (let i = 0; i < WINDOW_SIZE; i++) {
     h.window[i] = 0;
   }
   h.digest = 0;
@@ -152,7 +154,6 @@ function rabin_init(h: Rabin): Rabin {
 
 export class Rabin {
   window: Uint8Array
-  window_size: i32
   wpos: i32
   count: u64
   pos: u64
@@ -169,12 +170,11 @@ export class Rabin {
   maxsize: u64
   mask: u64
 
-  constructor(average_bits: u32, minsize: u32, maxsize: u32, window_size: i32) {
+  constructor(average_bits: u32, minsize: u32, maxsize: u32) {
     this.average_bits = <u64>average_bits;
     this.minsize = <u64>minsize;
     this.maxsize = <u64>maxsize;
-    this.window = new Uint8Array(window_size);
-    this.window_size = window_size;
+    this.window = new Uint8Array(WINDOW_SIZE);
 
     // hardcoded
     this.mask = (1 << this.average_bits) - 1;
