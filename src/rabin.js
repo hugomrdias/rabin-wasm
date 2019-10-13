@@ -35,9 +35,7 @@ class Rabin {
         const pointer = __retain(__allocArray(Uint8Array_ID, buffer))
 
         // run finderprint
-        this.rabin.fingerprint(pointer, lengthsPtr)
-
-        const processed = __getInt32Array(lengthsPtr)
+        const processed = __getInt32Array(this.rabin.fingerprint(pointer, lengthsPtr))
 
         // free memory
         // __release(lengthsPtr)
@@ -45,13 +43,14 @@ class Rabin {
 
         // TODO: remove this. @see https://github.com/ipfs/js-ipfs/issues/2118#issuecomment-497722625
         // clean extra 0s in the array
-        const cleanArr = []
-        for (let i = 0; i < processed.length; i++) {
-            if (processed[i] === 0) break
-            cleanArr[i] = processed[i];
-        }
-
-        return cleanArr
+        // const cleanArr = []
+        // for (let i = 0; i < processed.length; i++) {
+        //     if (processed[i] === 0) break
+        //     cleanArr[i] = processed[i];
+        // }
+        //
+        // return cleanArr
+        return processed;
     }
 }
 

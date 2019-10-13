@@ -1530,7 +1530,7 @@
   local.get $2
   i32.store
  )
- (func $assembly/index/Rabin#fingerprint (; 22 ;) (type $FUNCSIG$viii) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $assembly/index/Rabin#fingerprint (; 22 ;) (type $FUNCSIG$iiii) (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
   (local $3 i32)
   (local $4 i32)
   (local $5 i32)
@@ -1579,19 +1579,19 @@
      local.get $4
      local.set $6
      local.get $8
-     i64.load offset=16
+     i64.load offset=24
      local.set $9
      local.get $8
-     i64.load offset=24
+     i64.load offset=16
      local.set $10
      local.get $8
-     i64.load offset=104
+     i64.load offset=120
      local.set $11
      local.get $8
-     i64.load offset=112
+     i64.load offset=104
      local.set $12
      local.get $8
-     i64.load offset=120
+     i64.load offset=112
      local.set $13
      block $break|1
       i32.const 0
@@ -1673,21 +1673,21 @@
        call $~lib/rt/stub/__release
        local.get $17
        call $~lib/rt/stub/__release
-       local.get $9
-       i64.const 1
-       i64.add
-       local.set $9
        local.get $10
        i64.const 1
        i64.add
        local.set $10
        local.get $9
-       local.get $11
+       i64.const 1
+       i64.add
+       local.set $9
+       local.get $10
+       local.get $12
        i64.ge_u
        if (result i32)
         local.get $8
         i64.load offset=40
-        local.get $13
+        local.get $11
         i64.and
         i64.const 0
         i64.eq
@@ -1697,8 +1697,8 @@
        if (result i32)
         i32.const 1
        else
-        local.get $9
-        local.get $12
+        local.get $10
+        local.get $13
         i64.ge_u
        end
        if
@@ -1707,17 +1707,17 @@
         i64.load offset=32
         i64.store offset=48
         local.get $8
-        local.get $9
+        local.get $10
         i64.store offset=56
         local.get $8
         local.get $8
         i64.load offset=40
         i64.store offset=64
         local.get $8
-        local.get $10
+        local.get $9
         i64.store offset=24
         local.get $8
-        local.get $9
+        local.get $10
         i64.store offset=16
         local.get $8
         call $~lib/rt/stub/__retain
@@ -1845,10 +1845,10 @@
       unreachable
      end
      local.get $8
-     local.get $10
+     local.get $9
      i64.store offset=24
      local.get $8
-     local.get $9
+     local.get $10
      i64.store offset=16
      i32.const -1
      local.set $15
@@ -1888,10 +1888,11 @@
    end
    unreachable
   end
+  local.get $2
+  local.set $8
   local.get $1
   call $~lib/rt/stub/__release
-  local.get $2
-  call $~lib/rt/stub/__release
+  local.get $8
  )
  (func $start (; 23 ;) (type $FUNCSIG$v)
   global.get $~lib/heap/__heap_base

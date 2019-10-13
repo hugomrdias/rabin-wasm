@@ -74,14 +74,14 @@ function calc_tables(h: Rabin): void {
 }
 
 @inline
-function rabin_append(h: Rabin, b: usize): void {
+function rabin_append(h: Rabin, b: u8): void {
   var digest = h.digest;
   var index = <u8>(digest >> h.polynomial_shift);
   h.digest = ((digest << 8) | <u64>b) ^ unchecked(modTable[index]);
 }
 
 @inline
-function rabin_slide(h: Rabin, b: usize): void {
+function rabin_slide(h: Rabin, b: u8): void {
   var wpos = h.wpos;
   var out = h.window[wpos];
   h.window[wpos] = b;
@@ -105,11 +105,11 @@ function rabin_reset(h: Rabin): void {
 
 @inline
 function rabin_next_chunk(h: Rabin, buf: usize, len: i32): i32 {
-  var count = h.count;
   var pos = h.pos;
+  var count = h.count;
+  var mask = h.mask;
   var minsize = h.minsize;
   var maxsize = h.maxsize;
-  var mask = h.mask;
 
   for (let i = 0; i < len; i++) {
     let b = load<u8>(buf + i)
@@ -185,7 +185,7 @@ export class Rabin {
     rabin_init(this);
   }
 
-  fingerprint(buf: Uint8Array, lengths: Int32Array): void {
+  fingerprint(buf: Uint8Array, lengths: Int32Array): Int32Array {
     let idx = 0;
     let len = buf.length;
     let ptr = buf.dataStart;
@@ -200,5 +200,6 @@ export class Rabin {
       let c = idx++;
       unchecked(lengths[c] = <i32>this.chunk_length);
     }
+    return lengths;
   }
 }

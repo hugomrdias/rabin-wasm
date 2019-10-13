@@ -1222,7 +1222,7 @@
   local.get $0
   i32.load offset=8
  )
- (func $assembly/index/Rabin#fingerprint (; 17 ;) (type $FUNCSIG$viii) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $assembly/index/Rabin#fingerprint (; 17 ;) (type $FUNCSIG$iiii) (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
   (local $3 i32)
   (local $4 i64)
   (local $5 i32)
@@ -1244,19 +1244,19 @@
   loop $continue|0
    block $assembly/index/rabin_next_chunk|inlined.0 (result i32)
     local.get $0
-    i64.load offset=16
-    local.set $4
-    local.get $0
     i64.load offset=24
     local.set $7
     local.get $0
-    i64.load offset=104
-    local.set $10
-    local.get $0
-    i64.load offset=112
-    local.set $11
+    i64.load offset=16
+    local.set $4
     local.get $0
     i64.load offset=120
+    local.set $10
+    local.get $0
+    i64.load offset=104
+    local.set $11
+    local.get $0
+    i64.load offset=112
     local.set $12
     i32.const 0
     local.set $5
@@ -1330,12 +1330,12 @@
       i64.const 1
       i64.add
       local.tee $4
-      local.get $10
+      local.get $11
       i64.ge_u
       if (result i32)
        local.get $0
        i64.load offset=40
-       local.get $12
+       local.get $10
        i64.and
        i64.const 0
        i64.eq
@@ -1346,7 +1346,7 @@
        i32.const 1
       else
        local.get $4
-       local.get $11
+       local.get $12
        i64.ge_u
       end
       if
@@ -1504,6 +1504,7 @@
     br $continue|0
    end
   end
+  local.get $2
  )
  (func $start (; 18 ;) (type $FUNCSIG$v)
   i32.const 288
