@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "assemblyscript": "AssemblyScript/assemblyscript",
-    "bl": "^1.0.0",
+    "bl": "^4.0.0",
     "debug": "^4.1.1",
     "minimist": "^1.2.0",
     "node-fetch": "^2.6.0",
@@ -45,7 +45,7 @@
     "browserify": "^16.3.0",
     "iso-random-stream": "^1.1.0",
     "long": "^4.0.0",
-    "np": "^5.0.2",
+    "np": "^5.1.1",
     "rabin": "^2.0.0",
     "size-limit": "^2.1.6"
   }
