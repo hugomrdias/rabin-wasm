@@ -126,6 +126,7 @@ function rabin_next_chunk(h: Rabin, buf: usize, len: i32): i32 {
       h.count = count;
 
       rabin_reset(h);
+      memory.fill(h.window.dataStart, 0, WINDOW_SIZE * sizeof<u8>());
       return i + 1;
     }
   }

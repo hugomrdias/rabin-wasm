@@ -1369,6 +1369,11 @@
        i64.or
        i64.xor
        i64.store offset=32
+       local.get $0
+       i32.load offset=120
+       i32.load offset=4
+       i32.const 64
+       call $~lib/memory/memory.fill
        local.get $1
        i32.const 1
        i32.add

@@ -1728,6 +1728,14 @@
         call $~lib/rt/stub/__release
         local.get $20
         call $~lib/rt/stub/__release
+        local.get $8
+        i32.load offset=120
+        i32.load offset=4
+        i32.const 0
+        global.get $assembly/index/WINDOW_SIZE
+        i32.const 1
+        i32.mul
+        call $~lib/memory/memory.fill
         local.get $14
         i32.const 1
         i32.add
