@@ -63,7 +63,7 @@ RabinStream.prototype._write = function (data, enc, cb) {
 RabinStream.prototype._process = function (cb) {
   var drained = true
   var sizes = this.rabin.fingerprint(Buffer.concat(this.pending))
-  
+
   this.pending = []
 
   debug('chunks', sizes)
