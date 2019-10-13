@@ -9,7 +9,6 @@
  (type $FUNCSIG$ij (func (param i64) (result i32)))
  (type $FUNCSIG$jjj (func (param i64 i64) (result i64)))
  (type $FUNCSIG$iiiii (func (param i32 i32 i32 i32) (result i32)))
- (type $FUNCSIG$jii (func (param i32 i32) (result i64)))
  (type $FUNCSIG$vii (func (param i32 i32)))
  (type $FUNCSIG$ji (func (param i32) (result i64)))
  (type $FUNCSIG$vij (func (param i32 i64)))
@@ -28,6 +27,7 @@
  (global $assembly/index/tables_initialized (mut i32) (i32.const 0))
  (global $assembly/index/modTable (mut i32) (i32.const 0))
  (global $assembly/index/outTable (mut i32) (i32.const 0))
+ (global $assembly/index/window (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 224))
  (global $assembly/index/Rabin i32 (i32.const 6))
  (export "memory" (memory $0))
@@ -41,8 +41,6 @@
  (export "degree" (func $assembly/index/degree))
  (export "mod" (func $assembly/index/mod))
  (export "Rabin" (global $assembly/index/Rabin))
- (export "Rabin#get:window" (func $Rabin#get:window))
- (export "Rabin#set:window" (func $Rabin#set:window))
  (export "Rabin#get:wpos" (func $Rabin#get:wpos))
  (export "Rabin#set:wpos" (func $Rabin#set:wpos))
  (export "Rabin#get:count" (func $Rabin#get:count))
@@ -570,7 +568,26 @@
   end
   local.get $0
  )
- (func $~lib/typedarray/Uint8Array#__set (; 11 ;) (type $FUNCSIG$viii) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $~lib/typedarray/Uint8Array#__get (; 11 ;) (type $FUNCSIG$iii) (param $0 i32) (param $1 i32) (result i32)
+  local.get $1
+  local.get $0
+  i32.load offset=8
+  i32.ge_u
+  if
+   i32.const 128
+   i32.const 184
+   i32.const 148
+   i32.const 44
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $0
+  i32.load offset=4
+  local.get $1
+  i32.add
+  i32.load8_u
+ )
+ (func $~lib/typedarray/Uint8Array#__set (; 12 ;) (type $FUNCSIG$viii) (param $0 i32) (param $1 i32) (param $2 i32)
   local.get $1
   local.get $0
   i32.load offset=8
@@ -590,53 +607,11 @@
   local.get $2
   i32.store8
  )
- (func $~lib/typedarray/Uint8Array#__get (; 12 ;) (type $FUNCSIG$iii) (param $0 i32) (param $1 i32) (result i32)
-  local.get $1
-  local.get $0
-  i32.load offset=8
-  i32.ge_u
-  if
-   i32.const 128
-   i32.const 184
-   i32.const 148
-   i32.const 44
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $0
-  i32.load offset=4
-  local.get $1
-  i32.add
-  i32.load8_u
- )
- (func $~lib/typedarray/Uint64Array#__get (; 13 ;) (type $FUNCSIG$jii) (param $0 i32) (param $1 i32) (result i64)
-  local.get $1
-  local.get $0
-  i32.load offset=8
-  i32.const 3
-  i32.shr_u
-  i32.ge_u
-  if
-   i32.const 128
-   i32.const 184
-   i32.const 1016
-   i32.const 63
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $0
-  i32.load offset=4
-  local.get $1
-  i32.const 3
-  i32.shl
-  i32.add
-  i64.load
- )
- (func $assembly/index/rabin_init (; 14 ;) (type $FUNCSIG$ii) (param $0 i32) (result i32)
+ (func $assembly/index/rabin_init (; 13 ;) (type $FUNCSIG$ii) (param $0 i32) (result i32)
   (local $1 i32)
   (local $2 i64)
-  (local $3 i32)
-  (local $4 i64)
+  (local $3 i64)
+  (local $4 i32)
   (local $5 i32)
   (local $6 i64)
   (local $7 i64)
@@ -657,7 +632,7 @@
      i32.const 255
      i32.and
      i64.extend_i32_u
-     local.set $4
+     local.set $3
      loop $continue|3
       block $assembly/index/degree|inlined.2 (result i32)
        i64.const -9223372036854775808
@@ -673,7 +648,7 @@
          local.get $1
          i32.sub
          local.get $2
-         local.get $4
+         local.get $3
          i64.and
          i64.const 0
          i64.gt_u
@@ -726,17 +701,17 @@
        i32.const -1
       end
       i32.sub
-      local.tee $3
+      local.tee $4
       i32.const 0
       i32.ge_s
       if
        local.get $6
-       local.get $3
+       local.get $4
        i64.extend_i32_s
        i64.shl
-       local.get $4
+       local.get $3
        i64.xor
-       local.set $4
+       local.set $3
        br $continue|3
       end
      end
@@ -747,26 +722,26 @@
       i32.const 63
       i32.lt_s
       if
-       local.get $4
+       local.get $3
        i64.const 8
        i64.shl
-       local.set $4
+       local.set $3
        loop $continue|7
         block $assembly/index/degree|inlined.4 (result i32)
          i64.const -9223372036854775808
          local.set $2
          i32.const 0
-         local.set $3
+         local.set $4
          loop $loop|5
-          local.get $3
+          local.get $4
           i32.const 64
           i32.lt_s
           if
            i32.const 63
-           local.get $3
+           local.get $4
            i32.sub
            local.get $2
-           local.get $4
+           local.get $3
            i64.and
            i64.const 0
            i64.gt_u
@@ -776,10 +751,10 @@
            i64.const 1
            i64.shr_u
            local.set $2
-           local.get $3
+           local.get $4
            i32.const 1
            i32.add
-           local.set $3
+           local.set $4
            br $loop|5
           end
          end
@@ -789,14 +764,14 @@
          i64.const -9223372036854775808
          local.set $2
          i32.const 0
-         local.set $3
+         local.set $4
          loop $loop|6
-          local.get $3
+          local.get $4
           i32.const 64
           i32.lt_s
           if
            i32.const 63
-           local.get $3
+           local.get $4
            i32.sub
            local.get $2
            local.get $6
@@ -809,27 +784,27 @@
            i64.const 1
            i64.shr_u
            local.set $2
-           local.get $3
+           local.get $4
            i32.const 1
            i32.add
-           local.set $3
+           local.set $4
            br $loop|6
           end
          end
          i32.const -1
         end
         i32.sub
-        local.tee $3
+        local.tee $4
         i32.const 0
         i32.ge_s
         if
          local.get $6
-         local.get $3
+         local.get $4
          i64.extend_i32_s
          i64.shl
-         local.get $4
+         local.get $3
          i64.xor
-         local.set $4
+         local.set $3
          br $continue|7
         end
        end
@@ -846,7 +821,7 @@
      i32.const 3
      i32.shl
      i32.add
-     local.get $4
+     local.get $3
      i64.store
      local.get $5
      i32.const 1
@@ -857,7 +832,7 @@
    end
    block $assembly/index/degree|inlined.6 (result i32)
     i64.const -9223372036854775808
-    local.set $4
+    local.set $3
     i32.const 0
     local.set $5
     loop $loop|8
@@ -868,17 +843,17 @@
       i32.const 63
       local.get $5
       i32.sub
-      local.get $4
+      local.get $3
       local.get $6
       i64.and
       i64.const 0
       i64.gt_u
       br_if $assembly/index/degree|inlined.6
       drop
-      local.get $4
+      local.get $3
       i64.const 1
       i64.shr_u
-      local.set $4
+      local.set $3
       local.get $5
       i32.const 1
       i32.add
@@ -903,7 +878,7 @@
      local.get $7
      i64.shl
      local.tee $9
-     local.set $4
+     local.set $3
      loop $continue|12
       block $assembly/index/degree|inlined.7 (result i32)
        i64.const -9223372036854775808
@@ -919,7 +894,7 @@
          local.get $1
          i32.sub
          local.get $2
-         local.get $4
+         local.get $3
          i64.and
          i64.const 0
          i64.gt_u
@@ -972,17 +947,17 @@
        i32.const -1
       end
       i32.sub
-      local.tee $3
+      local.tee $4
       i32.const 0
       i32.ge_s
       if
        local.get $6
-       local.get $3
+       local.get $4
        i64.extend_i32_s
        i64.shl
-       local.get $4
+       local.get $3
        i64.xor
-       local.set $4
+       local.set $3
        br $continue|12
       end
      end
@@ -991,7 +966,7 @@
      i32.const 3
      i32.shl
      i32.add
-     local.get $4
+     local.get $3
      local.get $9
      i64.or
      i64.store
@@ -1011,64 +986,51 @@
   local.get $0
   i64.const 0
   i64.store offset=24
-  i32.const 0
-  local.set $3
-  loop $loop|13
-   local.get $3
-   i32.const 64
-   i32.lt_s
-   if
-    local.get $0
-    i32.load
-    local.get $3
-    i32.const 0
-    call $~lib/typedarray/Uint8Array#__set
-    local.get $3
-    i32.const 1
-    i32.add
-    local.set $3
-    br $loop|13
-   end
-  end
+  global.get $assembly/index/window
+  i32.load offset=4
+  i32.const 64
+  call $~lib/memory/memory.fill
   local.get $0
   i64.const 0
   i64.store offset=32
   local.get $0
   i32.const 0
-  i32.store offset=4
+  i32.store
   local.get $0
   i64.const 0
   i64.store offset=8
   local.get $0
   i64.const 0
   i64.store offset=32
+  global.get $assembly/index/window
   local.get $0
   i32.load
-  local.get $0
-  i32.load offset=4
-  local.tee $3
+  local.tee $4
   call $~lib/typedarray/Uint8Array#__get
   local.set $1
-  local.get $0
-  i32.load
-  local.get $3
+  global.get $assembly/index/window
+  local.get $4
   i32.const 1
   call $~lib/typedarray/Uint8Array#__set
   local.get $0
   local.get $0
   i64.load offset=32
   global.get $assembly/index/outTable
+  i32.load offset=4
   local.get $1
-  call $~lib/typedarray/Uint64Array#__get
+  i32.const 3
+  i32.shl
+  i32.add
+  i64.load
   i64.xor
   i64.store offset=32
   local.get $0
-  local.get $3
+  local.get $4
   i32.const 1
   i32.add
   i32.const 64
   i32.rem_s
-  i32.store offset=4
+  i32.store
   local.get $0
   global.get $assembly/index/modTable
   i32.load offset=4
@@ -1094,7 +1056,7 @@
   i64.store offset=32
   local.get $0
  )
- (func $assembly/index/Rabin#constructor (; 15 ;) (type $FUNCSIG$iiiii) (param $0 i32) (param $1 i32) (param $2 i32) (param $3 i32) (result i32)
+ (func $assembly/index/Rabin#constructor (; 14 ;) (type $FUNCSIG$iiiii) (param $0 i32) (param $1 i32) (param $2 i32) (param $3 i32) (result i32)
   local.get $0
   i32.eqz
   if
@@ -1106,9 +1068,6 @@
   local.get $0
   i32.const 0
   i32.store
-  local.get $0
-  i32.const 0
-  i32.store offset=4
   local.get $0
   i64.const 0
   i64.store offset=8
@@ -1163,19 +1122,6 @@
   local.get $3
   i64.extend_i32_u
   i64.store offset=104
-  i32.const 12
-  i32.const 4
-  call $~lib/rt/stub/__alloc
-  i32.const 64
-  i32.const 0
-  call $~lib/arraybuffer/ArrayBufferView#constructor
-  local.set $1
-  local.get $0
-  i32.load
-  drop
-  local.get $0
-  local.get $1
-  i32.store
   local.get $0
   i64.const 1
   local.get $0
@@ -1201,17 +1147,17 @@
   drop
   local.get $0
  )
- (func $assembly/index/Rabin#fingerprint (; 16 ;) (type $FUNCSIG$iiii) (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
-  (local $3 i32)
-  (local $4 i64)
-  (local $5 i32)
-  (local $6 i64)
+ (func $assembly/index/Rabin#fingerprint (; 15 ;) (type $FUNCSIG$iiii) (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
+  (local $3 i64)
+  (local $4 i32)
+  (local $5 i64)
+  (local $6 i32)
   (local $7 i32)
   (local $8 i32)
-  (local $9 i32)
+  (local $9 i64)
   (local $10 i64)
   (local $11 i64)
-  (local $12 i64)
+  (local $12 i32)
   (local $13 i64)
   (local $14 i32)
   local.get $1
@@ -1224,58 +1170,60 @@
    block $assembly/index/rabin_next_chunk|inlined.0 (result i32)
     local.get $0
     i64.load offset=16
-    local.set $6
+    local.set $5
     local.get $0
     i64.load offset=8
-    local.set $4
+    local.set $3
     local.get $0
     i64.load offset=112
-    local.set $10
+    local.set $9
     local.get $0
     i64.load offset=96
-    local.set $11
+    local.set $10
     local.get $0
     i64.load offset=104
-    local.set $12
+    local.set $11
     i32.const 0
-    local.set $5
+    local.set $1
     loop $loop|1
-     local.get $5
+     local.get $1
      local.get $7
      i32.lt_s
      if
-      local.get $5
+      local.get $1
       local.get $8
       i32.add
       i32.load8_u
-      local.set $1
+      local.set $4
+      global.get $assembly/index/window
       local.get $0
       i32.load
-      local.get $0
-      i32.load offset=4
-      local.tee $3
+      local.tee $6
       call $~lib/typedarray/Uint8Array#__get
-      local.set $9
-      local.get $0
-      i32.load
-      local.get $3
-      local.get $1
+      local.set $12
+      global.get $assembly/index/window
+      local.get $6
+      local.get $4
       call $~lib/typedarray/Uint8Array#__set
       local.get $0
       local.get $0
       i64.load offset=32
       global.get $assembly/index/outTable
-      local.get $9
-      call $~lib/typedarray/Uint64Array#__get
+      i32.load offset=4
+      local.get $12
+      i32.const 3
+      i32.shl
+      i32.add
+      i64.load
       i64.xor
       i64.store offset=32
       local.get $0
-      local.get $3
+      local.get $6
       i32.const 1
       i32.add
       i32.const 64
       i32.rem_s
-      i32.store offset=4
+      i32.store
       local.get $0
       global.get $assembly/index/modTable
       i32.load offset=4
@@ -1292,7 +1240,7 @@
       i32.shl
       i32.add
       i64.load
-      local.get $1
+      local.get $4
       i64.extend_i32_u
       local.get $13
       i64.const 8
@@ -1300,20 +1248,20 @@
       i64.or
       i64.xor
       i64.store offset=32
-      local.get $6
+      local.get $5
       i64.const 1
       i64.add
-      local.set $6
-      local.get $4
+      local.set $5
+      local.get $3
       i64.const 1
       i64.add
-      local.tee $4
-      local.get $11
+      local.tee $3
+      local.get $10
       i64.ge_u
       if (result i32)
        local.get $0
        i64.load offset=32
-       local.get $10
+       local.get $9
        i64.and
        i64.const 0
        i64.eq
@@ -1323,8 +1271,8 @@
       if (result i32)
        i32.const 1
       else
-       local.get $4
-       local.get $12
+       local.get $3
+       local.get $11
        i64.ge_u
       end
       if
@@ -1333,85 +1281,70 @@
        i64.load offset=24
        i64.store offset=40
        local.get $0
-       local.get $4
+       local.get $3
        i64.store offset=48
        local.get $0
        local.get $0
        i64.load offset=32
        i64.store offset=56
        local.get $0
-       local.get $6
+       local.get $5
        i64.store offset=16
        local.get $0
-       local.get $4
+       local.get $3
+       i64.store offset=8
+       global.get $assembly/index/window
+       i32.load offset=4
+       i32.const 64
+       call $~lib/memory/memory.fill
+       local.get $0
+       i64.const 0
+       i64.store offset=32
+       local.get $0
+       i32.const 0
+       i32.store
+       local.get $0
+       i64.const 0
        i64.store offset=8
        local.get $0
-       local.set $1
-       i32.const 0
-       local.set $3
-       loop $loop|2
-        local.get $3
-        i32.const 64
-        i32.lt_s
-        if
-         local.get $1
-         i32.load
-         local.get $3
-         i32.const 0
-         call $~lib/typedarray/Uint8Array#__set
-         local.get $3
-         i32.const 1
-         i32.add
-         local.set $3
-         br $loop|2
-        end
-       end
-       local.get $1
        i64.const 0
        i64.store offset=32
-       local.get $1
-       i32.const 0
-       i32.store offset=4
-       local.get $1
-       i64.const 0
-       i64.store offset=8
-       local.get $1
-       i64.const 0
-       i64.store offset=32
-       local.get $1
+       global.get $assembly/index/window
+       local.get $0
        i32.load
-       local.get $1
-       i32.load offset=4
-       local.tee $3
+       local.tee $4
        call $~lib/typedarray/Uint8Array#__get
-       local.set $9
-       local.get $1
-       i32.load
-       local.get $3
+       local.set $6
+       global.get $assembly/index/window
+       local.get $4
        i32.const 1
        call $~lib/typedarray/Uint8Array#__set
-       local.get $1
-       local.get $1
+       local.get $0
+       local.get $0
        i64.load offset=32
        global.get $assembly/index/outTable
-       local.get $9
-       call $~lib/typedarray/Uint64Array#__get
+       i32.load offset=4
+       local.get $6
+       i32.const 3
+       i32.shl
+       i32.add
+       i64.load
        i64.xor
        i64.store offset=32
-       local.get $1
-       local.get $3
+       local.get $0
+       local.get $4
        i32.const 1
        i32.add
        i32.const 64
        i32.rem_s
-       i32.store offset=4
-       local.get $1
+       i32.store
+       local.get $0
        global.get $assembly/index/modTable
        i32.load offset=4
-       local.get $1
+       local.get $0
        i64.load offset=32
-       local.tee $4
-       local.get $1
+       local.tee $3
+       local.get $0
        i64.load offset=80
        i64.shr_u
        i32.wrap_i64
@@ -1421,32 +1354,32 @@
        i32.shl
        i32.add
        i64.load
-       local.get $4
+       local.get $3
        i64.const 8
        i64.shl
        i64.const 1
        i64.or
        i64.xor
        i64.store offset=32
-       local.get $5
+       local.get $1
        i32.const 1
        i32.add
        br $assembly/index/rabin_next_chunk|inlined.0
       else
-       local.get $5
+       local.get $1
        i32.const 1
        i32.add
-       local.set $5
+       local.set $1
        br $loop|1
       end
       unreachable
      end
     end
     local.get $0
-    local.get $6
+    local.get $5
     i64.store offset=16
     local.get $0
-    local.get $4
+    local.get $3
     i64.store offset=8
     i32.const -1
    end
@@ -1481,7 +1414,7 @@
   end
   local.get $2
  )
- (func $start (; 17 ;) (type $FUNCSIG$v)
+ (func $start (; 16 ;) (type $FUNCSIG$v)
   i32.const 288
   global.set $~lib/rt/stub/startOffset
   i32.const 288
@@ -1490,150 +1423,145 @@
   global.set $assembly/index/modTable
   call $~lib/typedarray/Uint64Array#constructor
   global.set $assembly/index/outTable
+  i32.const 12
+  i32.const 4
+  call $~lib/rt/stub/__alloc
+  i32.const 64
+  i32.const 0
+  call $~lib/arraybuffer/ArrayBufferView#constructor
+  global.set $assembly/index/window
  )
- (func $Rabin#get:window (; 18 ;) (type $FUNCSIG$ii) (param $0 i32) (result i32)
+ (func $Rabin#get:wpos (; 17 ;) (type $FUNCSIG$ii) (param $0 i32) (result i32)
   local.get $0
   i32.load
  )
- (func $Rabin#set:window (; 19 ;) (type $FUNCSIG$vii) (param $0 i32) (param $1 i32)
-  local.get $1
-  i32.load
-  drop
+ (func $Rabin#set:wpos (; 18 ;) (type $FUNCSIG$vii) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store
  )
- (func $Rabin#get:wpos (; 20 ;) (type $FUNCSIG$ii) (param $0 i32) (result i32)
-  local.get $0
-  i32.load offset=4
- )
- (func $Rabin#set:wpos (; 21 ;) (type $FUNCSIG$vii) (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  i32.store offset=4
- )
- (func $Rabin#get:count (; 22 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:count (; 19 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=8
  )
- (func $Rabin#set:count (; 23 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:count (; 20 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=8
  )
- (func $Rabin#get:pos (; 24 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:pos (; 21 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=16
  )
- (func $Rabin#set:pos (; 25 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:pos (; 22 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=16
  )
- (func $Rabin#get:start (; 26 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:start (; 23 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=24
  )
- (func $Rabin#set:start (; 27 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:start (; 24 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=24
  )
- (func $Rabin#get:digest (; 28 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:digest (; 25 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=32
  )
- (func $Rabin#set:digest (; 29 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:digest (; 26 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=32
  )
- (func $Rabin#get:chunk_start (; 30 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:chunk_start (; 27 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=40
  )
- (func $Rabin#set:chunk_start (; 31 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:chunk_start (; 28 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=40
  )
- (func $Rabin#get:chunk_length (; 32 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:chunk_length (; 29 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=48
  )
- (func $Rabin#set:chunk_length (; 33 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:chunk_length (; 30 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=48
  )
- (func $Rabin#get:chunk_cut_fingerprint (; 34 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:chunk_cut_fingerprint (; 31 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=56
  )
- (func $Rabin#set:chunk_cut_fingerprint (; 35 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:chunk_cut_fingerprint (; 32 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=56
  )
- (func $Rabin#get:polynomial (; 36 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:polynomial (; 33 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=64
  )
- (func $Rabin#set:polynomial (; 37 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:polynomial (; 34 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=64
  )
- (func $Rabin#get:polynomial_degree (; 38 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:polynomial_degree (; 35 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=72
  )
- (func $Rabin#set:polynomial_degree (; 39 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:polynomial_degree (; 36 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=72
  )
- (func $Rabin#get:polynomial_shift (; 40 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:polynomial_shift (; 37 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=80
  )
- (func $Rabin#set:polynomial_shift (; 41 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:polynomial_shift (; 38 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=80
  )
- (func $Rabin#get:average_bits (; 42 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:average_bits (; 39 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=88
  )
- (func $Rabin#set:average_bits (; 43 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:average_bits (; 40 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=88
  )
- (func $Rabin#get:minsize (; 44 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:minsize (; 41 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=96
  )
- (func $Rabin#set:minsize (; 45 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:minsize (; 42 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=96
  )
- (func $Rabin#get:maxsize (; 46 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:maxsize (; 43 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=104
  )
- (func $Rabin#set:maxsize (; 47 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:maxsize (; 44 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=104
  )
- (func $Rabin#get:mask (; 48 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:mask (; 45 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=112
  )
- (func $Rabin#set:mask (; 49 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:mask (; 46 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=112

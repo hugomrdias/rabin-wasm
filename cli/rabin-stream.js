@@ -6,8 +6,7 @@ const BufferList = require('bl')
 const debug = require('debug')('rabin')
 
 const { instantiateBuffer } = require("assemblyscript/lib/loader");
-const imports = {};
-const compiled = instantiateBuffer(fs.readFileSync(__dirname + "/../dist/rabin.wasm"), imports);
+const compiled = instantiateBuffer(fs.readFileSync(__dirname + "/../dist/rabin.wasm"), {});
 
 module.exports = RabinStream
 
@@ -19,7 +18,7 @@ function RabinStream (opts = {}) {
   var avgBits = +opts.bits || 12
   var min = +opts.min || 8 * 1024
   var max = +opts.max || 32 * 1024
-  this.rabin = new Rabin(avgBits, min, max, compiled)
+  this.rabin = new Rabin(compiled, avgBits, min, max)
   this.nextCb = null
   this.buffers = new BufferList()
   this.pending = []
