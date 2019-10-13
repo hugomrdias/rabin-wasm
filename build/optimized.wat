@@ -27,7 +27,6 @@
  (global $assembly/index/tables_initialized (mut i32) (i32.const 0))
  (global $assembly/index/modTable (mut i32) (i32.const 0))
  (global $assembly/index/outTable (mut i32) (i32.const 0))
- (global $assembly/index/window (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 224))
  (global $assembly/index/Rabin i32 (i32.const 6))
  (export "memory" (memory $0))
@@ -71,6 +70,8 @@
  (export "Rabin#set:maxsize" (func $Rabin#set:maxsize))
  (export "Rabin#get:mask" (func $Rabin#get:mask))
  (export "Rabin#set:mask" (func $Rabin#set:mask))
+ (export "Rabin#get:window" (func $Rabin#get:window))
+ (export "Rabin#set:window" (func $Rabin#set:window))
  (export "Rabin#constructor" (func $assembly/index/Rabin#constructor))
  (export "Rabin#fingerprint" (func $assembly/index/Rabin#fingerprint))
  (start $start)
@@ -986,10 +987,6 @@
   local.get $0
   i64.const 0
   i64.store offset=24
-  global.get $assembly/index/window
-  i32.load offset=4
-  i32.const 64
-  call $~lib/memory/memory.fill
   local.get $0
   i64.const 0
   i64.store offset=32
@@ -1002,13 +999,15 @@
   local.get $0
   i64.const 0
   i64.store offset=32
-  global.get $assembly/index/window
+  local.get $0
+  i32.load offset=120
   local.get $0
   i32.load
   local.tee $4
   call $~lib/typedarray/Uint8Array#__get
   local.set $1
-  global.get $assembly/index/window
+  local.get $0
+  i32.load offset=120
   local.get $4
   i32.const 1
   call $~lib/typedarray/Uint8Array#__set
@@ -1061,7 +1060,7 @@
   local.get $0
   i32.eqz
   if
-   i32.const 120
+   i32.const 124
    i32.const 6
    call $~lib/rt/stub/__alloc
    local.set $0
@@ -1111,6 +1110,14 @@
   local.get $0
   i64.const 0
   i64.store offset=112
+  local.get $0
+  i32.const 12
+  i32.const 4
+  call $~lib/rt/stub/__alloc
+  i32.const 64
+  i32.const 0
+  call $~lib/arraybuffer/ArrayBufferView#constructor
+  i32.store offset=120
   local.get $0
   local.get $1
   i64.extend_i32_u
@@ -1196,13 +1203,15 @@
       i32.add
       i32.load8_u
       local.set $4
-      global.get $assembly/index/window
+      local.get $0
+      i32.load offset=120
       local.get $0
       i32.load
       local.tee $6
       call $~lib/typedarray/Uint8Array#__get
       local.set $12
-      global.get $assembly/index/window
+      local.get $0
+      i32.load offset=120
       local.get $6
       local.get $4
       call $~lib/typedarray/Uint8Array#__set
@@ -1294,10 +1303,6 @@
        local.get $0
        local.get $3
        i64.store offset=8
-       global.get $assembly/index/window
-       i32.load offset=4
-       i32.const 64
-       call $~lib/memory/memory.fill
        local.get $0
        i64.const 0
        i64.store offset=32
@@ -1310,13 +1315,15 @@
        local.get $0
        i64.const 0
        i64.store offset=32
-       global.get $assembly/index/window
+       local.get $0
+       i32.load offset=120
        local.get $0
        i32.load
        local.tee $4
        call $~lib/typedarray/Uint8Array#__get
        local.set $6
-       global.get $assembly/index/window
+       local.get $0
+       i32.load offset=120
        local.get $4
        i32.const 1
        call $~lib/typedarray/Uint8Array#__set
@@ -1422,13 +1429,6 @@
   global.set $assembly/index/modTable
   call $~lib/typedarray/Uint64Array#constructor
   global.set $assembly/index/outTable
-  i32.const 12
-  i32.const 4
-  call $~lib/rt/stub/__alloc
-  i32.const 64
-  i32.const 0
-  call $~lib/arraybuffer/ArrayBufferView#constructor
-  global.set $assembly/index/window
  )
  (func $Rabin#get:wpos (; 17 ;) (type $FUNCSIG$ii) (param $0 i32) (result i32)
   local.get $0
@@ -1564,5 +1564,17 @@
   local.get $0
   local.get $1
   i64.store offset=112
+ )
+ (func $Rabin#get:window (; 47 ;) (type $FUNCSIG$ii) (param $0 i32) (result i32)
+  local.get $0
+  i32.load offset=120
+ )
+ (func $Rabin#set:window (; 48 ;) (type $FUNCSIG$vii) (param $0 i32) (param $1 i32)
+  local.get $1
+  i32.load offset=120
+  drop
+  local.get $0
+  local.get $1
+  i32.store offset=120
  )
 )

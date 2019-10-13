@@ -32,7 +32,6 @@
  (global $~lib/ASC_SHRINK_LEVEL i32 (i32.const 0))
  (global $assembly/index/modTable (mut i32) (i32.const 0))
  (global $assembly/index/outTable (mut i32) (i32.const 0))
- (global $assembly/index/window (mut i32) (i32.const 0))
  (global $~lib/rt/__rtti_base i32 (i32.const 224))
  (global $~lib/heap/__heap_base i32 (i32.const 284))
  (global $assembly/index/Rabin i32 (i32.const 6))
@@ -77,6 +76,8 @@
  (export "Rabin#set:maxsize" (func $Rabin#set:maxsize))
  (export "Rabin#get:mask" (func $Rabin#get:mask))
  (export "Rabin#set:mask" (func $Rabin#set:mask))
+ (export "Rabin#get:window" (func $Rabin#get:window))
+ (export "Rabin#set:window" (func $Rabin#set:window))
  (export "Rabin#constructor" (func $assembly/index/Rabin#constructor))
  (export "Rabin#fingerprint" (func $assembly/index/Rabin#fingerprint))
  (start $start)
@@ -547,23 +548,7 @@
   local.set $0
   local.get $0
  )
- (func $~lib/typedarray/Uint8Array#constructor (; 9 ;) (type $FUNCSIG$iii) (param $0 i32) (param $1 i32) (result i32)
-  local.get $0
-  if (result i32)
-   local.get $0
-  else
-   i32.const 12
-   i32.const 4
-   call $~lib/rt/stub/__alloc
-   call $~lib/rt/stub/__retain
-  end
-  local.get $1
-  i32.const 0
-  call $~lib/arraybuffer/ArrayBufferView#constructor
-  local.set $0
-  local.get $0
- )
- (func $start:assembly/index (; 10 ;) (type $FUNCSIG$v)
+ (func $start:assembly/index (; 9 ;) (type $FUNCSIG$v)
   i32.const 0
   i32.const 256
   call $~lib/typedarray/Uint64Array#constructor
@@ -572,12 +557,8 @@
   i32.const 256
   call $~lib/typedarray/Uint64Array#constructor
   global.set $assembly/index/outTable
-  i32.const 0
-  i32.const 64
-  call $~lib/typedarray/Uint8Array#constructor
-  global.set $assembly/index/window
  )
- (func $assembly/index/degree (; 11 ;) (type $FUNCSIG$ij) (param $0 i64) (result i32)
+ (func $assembly/index/degree (; 10 ;) (type $FUNCSIG$ij) (param $0 i64) (result i32)
   (local $1 i64)
   (local $2 i32)
   i64.const -9223372036854775808
@@ -616,7 +597,7 @@
   end
   i32.const -1
  )
- (func $assembly/index/mod (; 12 ;) (type $FUNCSIG$jjj) (param $0 i64) (param $1 i64) (result i64)
+ (func $assembly/index/mod (; 11 ;) (type $FUNCSIG$jjj) (param $0 i64) (param $1 i64) (result i64)
   (local $2 i32)
   (local $3 i64)
   (local $4 i64)
@@ -718,6 +699,22 @@
    end
    unreachable
   end
+  local.get $0
+ )
+ (func $~lib/typedarray/Uint8Array#constructor (; 12 ;) (type $FUNCSIG$iii) (param $0 i32) (param $1 i32) (result i32)
+  local.get $0
+  if (result i32)
+   local.get $0
+  else
+   i32.const 12
+   i32.const 4
+   call $~lib/rt/stub/__alloc
+   call $~lib/rt/stub/__retain
+  end
+  local.get $1
+  i32.const 0
+  call $~lib/arraybuffer/ArrayBufferView#constructor
+  local.set $0
   local.get $0
  )
  (func $~lib/typedarray/Uint64Array#__uset (; 13 ;) (type $FUNCSIG$viij) (param $0 i32) (param $1 i32) (param $2 i64)
@@ -1269,13 +1266,6 @@
   local.get $0
   call $~lib/rt/stub/__retain
   local.set $14
-  global.get $assembly/index/window
-  i32.load offset=4
-  i32.const 0
-  global.get $assembly/index/WINDOW_SIZE
-  i32.const 1
-  i32.mul
-  call $~lib/memory/memory.fill
   local.get $14
   i64.const 0
   i64.store offset=32
@@ -1296,11 +1286,13 @@
   local.get $13
   i32.load
   local.set $1
-  global.get $assembly/index/window
+  local.get $13
+  i32.load offset=120
   local.get $1
   call $~lib/typedarray/Uint8Array#__get
   local.set $3
-  global.get $assembly/index/window
+  local.get $13
+  i32.load offset=120
   local.get $1
   local.get $10
   call $~lib/typedarray/Uint8Array#__set
@@ -1359,7 +1351,7 @@
   local.get $0
   i32.eqz
   if
-   i32.const 120
+   i32.const 124
    i32.const 6
    call $~lib/rt/stub/__alloc
    call $~lib/rt/stub/__retain
@@ -1410,6 +1402,11 @@
   local.get $0
   i64.const 0
   i64.store offset=112
+  local.get $0
+  i32.const 0
+  global.get $assembly/index/WINDOW_SIZE
+  call $~lib/typedarray/Uint8Array#constructor
+  i32.store offset=120
   local.get $0
   local.get $1
   i64.extend_i32_u
@@ -1546,11 +1543,13 @@
        local.get $17
        i32.load
        local.set $18
-       global.get $assembly/index/window
+       local.get $17
+       i32.load offset=120
        local.get $18
        call $~lib/typedarray/Uint8Array#__get
        local.set $19
-       global.get $assembly/index/window
+       local.get $17
+       i32.load offset=120
        local.get $18
        local.get $16
        call $~lib/typedarray/Uint8Array#__set
@@ -1650,13 +1649,6 @@
         local.get $8
         call $~lib/rt/stub/__retain
         local.set $20
-        global.get $assembly/index/window
-        i32.load offset=4
-        i32.const 0
-        global.get $assembly/index/WINDOW_SIZE
-        i32.const 1
-        i32.mul
-        call $~lib/memory/memory.fill
         local.get $20
         i64.const 0
         i64.store offset=32
@@ -1677,11 +1669,13 @@
         local.get $23
         i32.load
         local.set $19
-        global.get $assembly/index/window
+        local.get $23
+        i32.load offset=120
         local.get $19
         call $~lib/typedarray/Uint8Array#__get
         local.set $18
-        global.get $assembly/index/window
+        local.get $23
+        i32.load offset=120
         local.get $19
         local.get $21
         call $~lib/typedarray/Uint8Array#__set
@@ -1946,5 +1940,28 @@
   local.get $0
   local.get $1
   i64.store offset=112
+ )
+ (func $Rabin#get:window (; 54 ;) (type $FUNCSIG$ii) (param $0 i32) (result i32)
+  local.get $0
+  i32.load offset=120
+  call $~lib/rt/stub/__retain
+ )
+ (func $Rabin#set:window (; 55 ;) (type $FUNCSIG$vii) (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  local.tee $0
+  local.get $0
+  i32.load offset=120
+  local.tee $1
+  i32.ne
+  if
+   local.get $0
+   call $~lib/rt/stub/__retain
+   drop
+   local.get $1
+   call $~lib/rt/stub/__release
+  end
+  local.get $0
+  i32.store offset=120
  )
 )

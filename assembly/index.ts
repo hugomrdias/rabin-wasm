@@ -6,7 +6,6 @@ const WINDOW_SIZE = 64;
 let tables_initialized = false;
 const modTable = new Uint64Array(256);
 const outTable = new Uint64Array(256);
-const window   = new Uint8Array(WINDOW_SIZE);
 
 @inline
 export function degree(polynom: u64): i32 {
@@ -86,8 +85,8 @@ function rabin_append(h: Rabin, b: u8): void {
 @inline
 function rabin_slide(h: Rabin, b: u8): void {
   var wpos = h.wpos;
-  var out = window[wpos];
-  window[wpos] = b;
+  var out = h.window[wpos];
+  h.window[wpos] = b;
   h.digest ^= unchecked(outTable[out]);
   h.wpos = (wpos + 1) % WINDOW_SIZE;
   rabin_append(h, b);
@@ -95,8 +94,6 @@ function rabin_slide(h: Rabin, b: u8): void {
 
 @inline
 function rabin_reset(h: Rabin): void {
-  memory.fill(window.dataStart, 0, WINDOW_SIZE * sizeof<u8>());
-
   h.digest = 0;
   h.wpos = 0;
   h.count = 0;
@@ -168,6 +165,8 @@ export class Rabin {
   minsize: u64
   maxsize: u64
   mask: u64
+
+  window: Uint8Array = new Uint8Array(WINDOW_SIZE)
 
   constructor(average_bits: u32, minsize: u32, maxsize: u32) {
     this.average_bits = <u64>average_bits;
