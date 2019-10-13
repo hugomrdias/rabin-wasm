@@ -28,6 +28,8 @@
  (global $assembly/index/Int32Array_ID i32 (i32.const 3))
  (global $assembly/index/Uint8Array_ID i32 (i32.const 4))
  (global $assembly/index/WINDOW_SIZE i32 (i32.const 64))
+ (global $assembly/index/POLYNOMIAL_DEGREE i32 (i32.const 53))
+ (global $assembly/index/POLYNOMIAL_SHIFT i32 (i32.const 45))
  (global $assembly/index/tables_initialized (mut i32) (i32.const 0))
  (global $~lib/ASC_SHRINK_LEVEL i32 (i32.const 0))
  (global $assembly/index/modTable (mut i32) (i32.const 0))
@@ -64,12 +66,6 @@
  (export "Rabin#set:chunk_cut_fingerprint" (func $Rabin#set:chunk_cut_fingerprint))
  (export "Rabin#get:polynomial" (func $Rabin#get:polynomial))
  (export "Rabin#set:polynomial" (func $Rabin#set:polynomial))
- (export "Rabin#get:polynomial_degree" (func $Rabin#get:polynomial_degree))
- (export "Rabin#set:polynomial_degree" (func $Rabin#set:polynomial_degree))
- (export "Rabin#get:polynomial_shift" (func $Rabin#get:polynomial_shift))
- (export "Rabin#set:polynomial_shift" (func $Rabin#set:polynomial_shift))
- (export "Rabin#get:average_bits" (func $Rabin#get:average_bits))
- (export "Rabin#set:average_bits" (func $Rabin#set:average_bits))
  (export "Rabin#get:minsize" (func $Rabin#get:minsize))
  (export "Rabin#set:minsize" (func $Rabin#set:minsize))
  (export "Rabin#get:maxsize" (func $Rabin#get:maxsize))
@@ -1258,12 +1254,6 @@
    global.set $assembly/index/tables_initialized
   end
   local.get $0
-  i64.const 0
-  i64.store offset=16
-  local.get $0
-  i64.const 0
-  i64.store offset=24
-  local.get $0
   call $~lib/rt/stub/__retain
   local.set $14
   local.get $14
@@ -1287,12 +1277,12 @@
   i32.load
   local.set $1
   local.get $13
-  i32.load offset=120
+  i32.load offset=96
   local.get $1
   call $~lib/typedarray/Uint8Array#__get
   local.set $3
   local.get $13
-  i32.load offset=120
+  i32.load offset=96
   local.get $1
   local.get $10
   call $~lib/typedarray/Uint8Array#__set
@@ -1320,8 +1310,8 @@
   i64.load offset=32
   local.set $4
   local.get $4
-  local.get $15
-  i64.load offset=80
+  global.get $assembly/index/POLYNOMIAL_SHIFT
+  i64.extend_i32_s
   i64.shr_u
   i32.wrap_i64
   local.set $16
@@ -1351,7 +1341,7 @@
   local.get $0
   i32.eqz
   if
-   i32.const 124
+   i32.const 100
    i32.const 6
    call $~lib/rt/stub/__alloc
    call $~lib/rt/stub/__retain
@@ -1394,31 +1384,18 @@
   i64.const 0
   i64.store offset=88
   local.get $0
-  i64.const 0
-  i64.store offset=96
-  local.get $0
-  i64.const 0
-  i64.store offset=104
-  local.get $0
-  i64.const 0
-  i64.store offset=112
-  local.get $0
   i32.const 0
   global.get $assembly/index/WINDOW_SIZE
   call $~lib/typedarray/Uint8Array#constructor
-  i32.store offset=120
-  local.get $0
-  local.get $1
-  i64.extend_i32_u
-  i64.store offset=88
+  i32.store offset=96
   local.get $0
   local.get $2
   i64.extend_i32_u
-  i64.store offset=96
+  i64.store offset=72
   local.get $0
   local.get $3
   i64.extend_i32_u
-  i64.store offset=104
+  i64.store offset=80
   local.get $0
   i64.const 1
   local.get $1
@@ -1426,19 +1403,10 @@
   i64.shl
   i64.const 1
   i64.sub
-  i64.store offset=112
+  i64.store offset=88
   local.get $0
   i64.const 17349423945073011
   i64.store offset=64
-  local.get $0
-  i64.const 53
-  i64.store offset=72
-  local.get $0
-  local.get $0
-  i64.load offset=72
-  i64.const 8
-  i64.sub
-  i64.store offset=80
   local.get $0
   call $assembly/index/rabin_init
   call $~lib/rt/stub/__release
@@ -1513,13 +1481,13 @@
      i64.load offset=8
      local.set $10
      local.get $8
-     i64.load offset=112
+     i64.load offset=88
      local.set $11
      local.get $8
-     i64.load offset=96
+     i64.load offset=72
      local.set $12
      local.get $8
-     i64.load offset=104
+     i64.load offset=80
      local.set $13
      block $break|1
       i32.const 0
@@ -1544,12 +1512,12 @@
        i32.load
        local.set $18
        local.get $17
-       i32.load offset=120
+       i32.load offset=96
        local.get $18
        call $~lib/typedarray/Uint8Array#__get
        local.set $19
        local.get $17
-       i32.load offset=120
+       i32.load offset=96
        local.get $18
        local.get $16
        call $~lib/typedarray/Uint8Array#__set
@@ -1577,8 +1545,8 @@
        i64.load offset=32
        local.set $22
        local.get $22
-       local.get $21
-       i64.load offset=80
+       global.get $assembly/index/POLYNOMIAL_SHIFT
+       i64.extend_i32_s
        i64.shr_u
        i32.wrap_i64
        local.set $23
@@ -1670,12 +1638,12 @@
         i32.load
         local.set $19
         local.get $23
-        i32.load offset=120
+        i32.load offset=96
         local.get $19
         call $~lib/typedarray/Uint8Array#__get
         local.set $18
         local.get $23
-        i32.load offset=120
+        i32.load offset=96
         local.get $19
         local.get $21
         call $~lib/typedarray/Uint8Array#__set
@@ -1703,8 +1671,8 @@
         i64.load offset=32
         local.set $22
         local.get $22
-        local.get $17
-        i64.load offset=80
+        global.get $assembly/index/POLYNOMIAL_SHIFT
+        i64.extend_i32_s
         i64.shr_u
         i32.wrap_i64
         local.set $24
@@ -1729,7 +1697,7 @@
         local.get $20
         call $~lib/rt/stub/__release
         local.get $8
-        i32.load offset=120
+        i32.load offset=96
         i32.load offset=4
         i32.const 0
         global.get $assembly/index/WINDOW_SIZE
@@ -1895,71 +1863,44 @@
   local.get $1
   i64.store offset=64
  )
- (func $Rabin#get:polynomial_degree (; 42 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:minsize (; 42 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=72
  )
- (func $Rabin#set:polynomial_degree (; 43 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:minsize (; 43 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=72
  )
- (func $Rabin#get:polynomial_shift (; 44 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:maxsize (; 44 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=80
  )
- (func $Rabin#set:polynomial_shift (; 45 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:maxsize (; 45 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=80
  )
- (func $Rabin#get:average_bits (; 46 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:mask (; 46 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=88
  )
- (func $Rabin#set:average_bits (; 47 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
+ (func $Rabin#set:mask (; 47 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=88
  )
- (func $Rabin#get:minsize (; 48 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
+ (func $Rabin#get:window (; 48 ;) (type $FUNCSIG$ii) (param $0 i32) (result i32)
   local.get $0
-  i64.load offset=96
- )
- (func $Rabin#set:minsize (; 49 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
-  local.get $0
-  local.get $1
-  i64.store offset=96
- )
- (func $Rabin#get:maxsize (; 50 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
-  local.get $0
-  i64.load offset=104
- )
- (func $Rabin#set:maxsize (; 51 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
-  local.get $0
-  local.get $1
-  i64.store offset=104
- )
- (func $Rabin#get:mask (; 52 ;) (type $FUNCSIG$ji) (param $0 i32) (result i64)
-  local.get $0
-  i64.load offset=112
- )
- (func $Rabin#set:mask (; 53 ;) (type $FUNCSIG$vij) (param $0 i32) (param $1 i64)
-  local.get $0
-  local.get $1
-  i64.store offset=112
- )
- (func $Rabin#get:window (; 54 ;) (type $FUNCSIG$ii) (param $0 i32) (result i32)
-  local.get $0
-  i32.load offset=120
+  i32.load offset=96
   call $~lib/rt/stub/__retain
  )
- (func $Rabin#set:window (; 55 ;) (type $FUNCSIG$vii) (param $0 i32) (param $1 i32)
+ (func $Rabin#set:window (; 49 ;) (type $FUNCSIG$vii) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   local.tee $0
   local.get $0
-  i32.load offset=120
+  i32.load offset=96
   local.tee $1
   i32.ne
   if
@@ -1970,6 +1911,6 @@
    call $~lib/rt/stub/__release
   end
   local.get $0
-  i32.store offset=120
+  i32.store offset=96
  )
 )

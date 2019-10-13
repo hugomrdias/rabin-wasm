@@ -2,6 +2,8 @@ export const Int32Array_ID = idof<Int32Array>();
 export const Uint8Array_ID = idof<Uint8Array>();
 
 const WINDOW_SIZE = 64;
+const POLYNOMIAL_DEGREE = 53;
+const POLYNOMIAL_SHIFT = POLYNOMIAL_DEGREE - 8;
 
 let tables_initialized = false;
 const modTable = new Uint64Array(256);
@@ -78,7 +80,7 @@ function calc_tables(h: Rabin): void {
 @inline
 function rabin_append(h: Rabin, b: u8): void {
   var digest = h.digest;
-  var index = <u8>(digest >> h.polynomial_shift);
+  var index = <u8>(digest >> POLYNOMIAL_SHIFT);
   h.digest = ((digest << 8) | <u64>b) ^ unchecked(modTable[index]);
 }
 
@@ -142,11 +144,7 @@ function rabin_init(h: Rabin): Rabin {
     calc_tables(h);
     tables_initialized = true;
   }
-
-  h.pos = 0;
-  h.start = 0;
   rabin_reset(h);
-
   return h;
 }
 
@@ -160,9 +158,6 @@ export class Rabin {
   chunk_length: u64
   chunk_cut_fingerprint: u64
   polynomial: u64
-  polynomial_degree: u64
-  polynomial_shift: u64
-  average_bits: u64
   minsize: u64
   maxsize: u64
   mask: u64
@@ -170,15 +165,12 @@ export class Rabin {
   window: Uint8Array = new Uint8Array(WINDOW_SIZE)
 
   constructor(average_bits: u32, minsize: u32, maxsize: u32) {
-    this.average_bits = <u64>average_bits;
     this.minsize = <u64>minsize;
     this.maxsize = <u64>maxsize;
 
     // hardcoded
-    this.mask = (1 << average_bits) - 1;
+    this.mask = (1 << <u64>average_bits) - 1;
     this.polynomial = 0x3DA3358B4DC173;
-    this.polynomial_degree = 53;
-    this.polynomial_shift = this.polynomial_degree - 8;
 
     rabin_init(this);
   }
