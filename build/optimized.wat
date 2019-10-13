@@ -456,7 +456,7 @@
     local.get $2
     i64.and
     i64.const 0
-    i64.gt_u
+    i64.ne
     if
      i32.const 63
      local.get $1
@@ -500,7 +500,7 @@
       local.get $3
       i64.and
       i64.const 0
-      i64.gt_u
+      i64.ne
       br_if $assembly/index/degree|inlined.0
       drop
       local.get $3
@@ -534,7 +534,7 @@
       local.get $3
       i64.and
       i64.const 0
-      i64.gt_u
+      i64.ne
       br_if $assembly/index/degree|inlined.1
       drop
       local.get $3
@@ -651,7 +651,7 @@
          local.get $3
          i64.and
          i64.const 0
-         i64.gt_u
+         i64.ne
          br_if $assembly/index/degree|inlined.2
          drop
          local.get $2
@@ -684,7 +684,7 @@
          local.get $6
          i64.and
          i64.const 0
-         i64.gt_u
+         i64.ne
          br_if $assembly/index/degree|inlined.3
          drop
          local.get $2
@@ -744,7 +744,7 @@
            local.get $3
            i64.and
            i64.const 0
-           i64.gt_u
+           i64.ne
            br_if $assembly/index/degree|inlined.4
            drop
            local.get $2
@@ -777,7 +777,7 @@
            local.get $6
            i64.and
            i64.const 0
-           i64.gt_u
+           i64.ne
            br_if $assembly/index/degree|inlined.5
            drop
            local.get $2
@@ -847,7 +847,7 @@
       local.get $6
       i64.and
       i64.const 0
-      i64.gt_u
+      i64.ne
       br_if $assembly/index/degree|inlined.6
       drop
       local.get $3
@@ -897,7 +897,7 @@
          local.get $3
          i64.and
          i64.const 0
-         i64.gt_u
+         i64.ne
          br_if $assembly/index/degree|inlined.7
          drop
          local.get $2
@@ -930,7 +930,7 @@
          local.get $6
          i64.and
          i64.const 0
-         i64.gt_u
+         i64.ne
          br_if $assembly/index/degree|inlined.8
          drop
          local.get $2
@@ -1057,6 +1057,7 @@
   local.get $0
  )
  (func $assembly/index/Rabin#constructor (; 14 ;) (type $FUNCSIG$iiiii) (param $0 i32) (param $1 i32) (param $2 i32) (param $3 i32) (result i32)
+  (local $4 i64)
   local.get $0
   i32.eqz
   if
@@ -1113,6 +1114,7 @@
   local.get $0
   local.get $1
   i64.extend_i32_u
+  local.tee $4
   i64.store offset=88
   local.get $0
   local.get $2
@@ -1124,8 +1126,7 @@
   i64.store offset=104
   local.get $0
   i64.const 1
-  local.get $0
-  i64.load offset=88
+  local.get $4
   i64.shl
   i64.const 1
   i64.sub
@@ -1395,14 +1396,12 @@
     local.get $8
     i32.add
     local.set $8
-    local.get $14
-    local.tee $1
-    i32.const 1
-    i32.add
-    local.set $14
     local.get $2
     i32.load offset=4
-    local.get $1
+    local.get $14
+    i32.const 1
+    i32.add
+    local.tee $14
     i32.const 2
     i32.shl
     i32.add

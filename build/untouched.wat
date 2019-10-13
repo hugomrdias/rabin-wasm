@@ -595,7 +595,7 @@
     local.get $0
     i64.and
     i64.const 0
-    i64.gt_u
+    i64.ne
     if
      i32.const 63
      local.get $2
@@ -641,7 +641,7 @@
        local.get $3
        i64.and
        i64.const 0
-       i64.gt_u
+       i64.ne
        if
         i32.const 63
         local.get $5
@@ -680,7 +680,7 @@
        local.get $3
        i64.and
        i64.const 0
-       i64.gt_u
+       i64.ne
        if
         i32.const 63
         local.get $5
@@ -859,7 +859,7 @@
           local.get $11
           i64.and
           i64.const 0
-          i64.gt_u
+          i64.ne
           if
            i32.const 63
            local.get $13
@@ -898,7 +898,7 @@
           local.get $11
           i64.and
           i64.const 0
-          i64.gt_u
+          i64.ne
           if
            i32.const 63
            local.get $13
@@ -986,7 +986,7 @@
             local.get $5
             i64.and
             i64.const 0
-            i64.gt_u
+            i64.ne
             if
              i32.const 63
              local.get $14
@@ -1025,7 +1025,7 @@
             local.get $5
             i64.and
             i64.const 0
-            i64.gt_u
+            i64.ne
             if
              i32.const 63
              local.get $14
@@ -1103,7 +1103,7 @@
       local.get $5
       i64.and
       i64.const 0
-      i64.gt_u
+      i64.ne
       if
        i32.const 63
        local.get $3
@@ -1166,7 +1166,7 @@
           local.get $9
           i64.and
           i64.const 0
-          i64.gt_u
+          i64.ne
           if
            i32.const 63
            local.get $13
@@ -1205,7 +1205,7 @@
           local.get $11
           i64.and
           i64.const 0
-          i64.gt_u
+          i64.ne
           if
            i32.const 63
            local.get $13
@@ -1424,8 +1424,8 @@
   i64.store offset=104
   local.get $0
   i64.const 1
-  local.get $0
-  i64.load offset=88
+  local.get $1
+  i64.extend_i32_u
   i64.shl
   i64.const 1
   i64.sub
@@ -1778,15 +1778,11 @@
     local.get $25
     i32.add
     local.set $5
+    local.get $2
     local.get $3
-    local.tee $8
     i32.const 1
     i32.add
-    local.set $3
-    local.get $8
-    local.set $8
-    local.get $2
-    local.get $8
+    local.tee $3
     local.get $0
     i64.load offset=48
     i32.wrap_i64

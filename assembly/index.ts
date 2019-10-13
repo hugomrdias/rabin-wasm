@@ -12,7 +12,7 @@ const window   = new Uint8Array(WINDOW_SIZE);
 export function degree(polynom: u64): i32 {
   var mask: u64 = 0x8000000000000000;
   for (let i = 0; i < 64; i++) {
-    if ((mask & polynom) > 0) {
+    if (mask & polynom) {
       return 63 - i;
     }
     mask >>= 1;
@@ -175,7 +175,7 @@ export class Rabin {
     this.maxsize = <u64>maxsize;
 
     // hardcoded
-    this.mask = (1 << this.average_bits) - 1;
+    this.mask = (1 << average_bits) - 1;
     this.polynomial = 0x3DA3358B4DC173;
     this.polynomial_degree = 53;
     this.polynomial_shift = this.polynomial_degree - 8;
@@ -195,8 +195,7 @@ export class Rabin {
 
       len -= remaining;
       ptr += remaining;
-      let c = idx++;
-      unchecked(lengths[c] = <i32>this.chunk_length);
+      unchecked(lengths[++idx] = <i32>this.chunk_length);
     }
     return lengths;
   }
