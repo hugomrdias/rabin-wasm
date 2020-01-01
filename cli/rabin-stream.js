@@ -5,8 +5,8 @@ const util = require('util')
 const BufferList = require('bl')
 const debug = require('debug')('rabin')
 
-const { instantiateBuffer } = require("assemblyscript/lib/loader");
-const compiled = instantiateBuffer(fs.readFileSync(__dirname + "/../dist/rabin.wasm"), {});
+const { instantiateSync } = require("@assemblyscript/loader");
+const compiled = instantiateSync(fs.readFileSync(__dirname + "/../dist/rabin.wasm"), {});
 
 module.exports = RabinStream
 
