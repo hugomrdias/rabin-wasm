@@ -2,7 +2,7 @@ module.exports = {
   /**
    * A set of globs passed to the glob package that qualify typescript files for testing.
    */
-  include: ["assembly/__tests__/**/*.spec.ts"],
+  include: ["assembly/__tests__/**/*.spec.as.ts"],
   /**
    * A set of globs passed to the glob package that quality files to be added to each test.
    */
@@ -17,6 +17,8 @@ module.exports = {
     "--binaryFile": ["output.wasm"],
     /** To enable wat file output, use the following flag. The filename is ignored, but required by the compiler. */
     // "--textFile": ["output.wat"],
+    /** To select an appropriate runtime, use the --runtime compiler flag. */
+    "--runtime": ["stub"] // Acceptable values are: full, half, stub (arena), and none
   },
   /**
    * A set of regexp that will disclude source files from testing.
@@ -64,4 +66,8 @@ module.exports = {
    * }
    */
   // reporter: new CustomReporter(),
+  /**
+   * Specify if the binary wasm file should be written to the file system.
+   */
+  outputBinary: false,
 };
