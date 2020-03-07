@@ -12,7 +12,7 @@
 module.exports = function wasm2js(wasmBuf) {
 
   return `
-    const { instantiateSync } = require("assemblyscript/lib/loader");
+    const { instantiateSync } = require("@assemblyscript/loader");
     const fs = require('fs')
     
     loadWebAssembly.supported = typeof WebAssembly !== 'undefined'
