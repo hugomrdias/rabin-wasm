@@ -1,24 +1,24 @@
-import "allocator/arena";
+export const Int32Array_ID = idof<Int32Array>();
+export const Uint8Array_ID = idof<Uint8Array>();
 
-export { memory }
 
 let tables_initialized: bool = false
-let modTable = new Uint64Array(256)
-let outTable = new Uint64Array(256)
+
+const modTable = new Uint64Array(256)
+const outTable = new Uint64Array(256)
+
 
 @inline
 export function degree(polynom: u64): i32 {
   var mask: u64 = 0x8000000000000000;
 
-    for (let i = 0; i < 64; i++) {
-        if ((mask & polynom) > 0) {
-            return 63 - i;
-        }
-
-        mask >>= 1;
-    }
-
-    return -1;
+  for (let i = 0; i < 64; i++) {
+      if ((mask & polynom) > 0) {
+          return 63 - i;
+      }
+      mask >>= 1;
+  }
+  return -1;
 }
 
 // Mod calculates the remainder of x divided by p.
@@ -60,7 +60,7 @@ function calc_tables(h: Rabin): void {
       for (let i = 0; i < h.window_size-1; i++) {
           hash = append_byte(hash, 0, h.polynomial);
       }
-      outTable[b] = hash;
+      unchecked(outTable[b] = hash);
   }
 
   // calculate table for reduction mod Polynomial
@@ -73,23 +73,24 @@ function calc_tables(h: Rabin): void {
       // two parts: Part A contains the result of the modulus operation, part
       // B is used to cancel out the 8 top bits so that one XOR operation is
       // enough to reduce modulo Polynomial
-      modTable[b] = mod((<u64>b) << k, h.polynomial) | (<u64>b) << k;
+      const bk = (<u64>b) << k;
+      unchecked(modTable[b] = mod(bk, h.polynomial) | bk);
   }
 }
 
 @inline
 function rabin_append(h: Rabin,  b: usize): void {
-  var index: u8 = <u8>(h.digest >> h.polynomial_shift);
-  h.digest <<= 8;
-  h.digest |= <u64>b;
-  h.digest ^= modTable[index];
+  var digest = h.digest
+  var index = <u8>(digest >> h.polynomial_shift)
+
+  h.digest = ((digest << 8) | <u64>b) ^ unchecked(modTable[index]);
 }
 
 @inline
 function rabin_slide(h: Rabin, b: usize): void {
   var out: u8 = h.window[h.wpos];
   h.window[h.wpos] = b;
-  h.digest = (h.digest ^ outTable[out]);
+  h.digest ^= unchecked(outTable[out]);
   h.wpos = (h.wpos + 1) % h.window_size;
   rabin_append(h, b);
 }
@@ -177,10 +178,10 @@ export class Rabin {
     rabin_init(this)
   }
 
-  fingerprint(buf: Uint8Array, lengths: Int32Array): void {
+  fingerprint(buf: Uint8Array, lengths: Int32Array): Int32Array {
     let len = buf.length;
     let chunk_idx = 0;
-    let ptr = buf.buffer.data
+    let ptr = buf.dataStart
     while (1) {
       var remaining = rabin_next_chunk(this, ptr, len);
       if (remaining < 0) {
@@ -192,5 +193,6 @@ export class Rabin {
       let c = chunk_idx++
       unchecked(lengths[c] = <i32>this.chunk_length)
     }
+    return lengths
   }
 }

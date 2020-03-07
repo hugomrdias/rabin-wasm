@@ -28,16 +28,16 @@ suite
         rabin.on('end', () => deferred.resolve())
     }
 })
-.add('js rabin', { 
-    defer: true,
-    fn: function(deferred) {
-        const rabin = new RabinJs()
-        const data = randomStream(100 * 1000 * 1024)
-        data.pipe(rabin)
-        rabin.on('data', () => {})
-        rabin.on('end', () => deferred.resolve())
-    }
-})
+// .add('js rabin', { 
+//     defer: true,
+//     fn: function(deferred) {
+//         const rabin = new RabinJs()
+//         const data = randomStream(100 * 1000 * 1024)
+//         data.pipe(rabin)
+//         rabin.on('data', () => {})
+//         rabin.on('end', () => deferred.resolve())
+//     }
+// })
 // add listeners
 .on('cycle', function(event) {
   console.log(String(event.target));

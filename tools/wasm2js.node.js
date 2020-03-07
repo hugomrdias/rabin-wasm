@@ -12,7 +12,7 @@
 module.exports = function wasm2js(wasmBuf) {
 
   return `
-    const { instantiateBuffer } = require("assemblyscript/lib/loader");
+    const { instantiateSync } = require("assemblyscript/lib/loader");
     const fs = require('fs')
     
     loadWebAssembly.supported = typeof WebAssembly !== 'undefined'
@@ -20,7 +20,7 @@ module.exports = function wasm2js(wasmBuf) {
     async function loadWebAssembly (imp = {}) {
       if (!loadWebAssembly.supported) return null
       
-      return instantiateBuffer(fs.readFileSync(__dirname + "/../dist/rabin.wasm"), imp);
+      return instantiateSync(fs.readFileSync(__dirname + "/../dist/rabin.wasm"), imp);
     }
     module.exports = loadWebAssembly
     `.replace(/^ {4}/gm, '')

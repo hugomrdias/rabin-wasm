@@ -28,18 +28,26 @@ class Rabin {
      * @memberof Rabin
      */
     fingerprint(buf) {
+        const { 
+            __retain,
+            __release,
+            __allocArray, 
+            __getInt32Array, 
+            Int32Array_ID, 
+            Uint8Array_ID 
+        } = this.asModule
+
         const lengths = new Int32Array(Math.ceil(buf.length/this.min))
-        const lengthsPtr = this.asModule.newArray(lengths)
-        const pointer = this.asModule.newArray(buf)
+        const lengthsPtr = __retain(__allocArray(Int32Array_ID, lengths))
+        const pointer = __retain(__allocArray(Uint8Array_ID, buf))
 
         // run finderprint
-        this.rabin.fingerprint(pointer, lengthsPtr)
-
-        const processed = this.asModule.getArray(Int32Array, lengthsPtr)
+        const out = this.rabin.fingerprint(pointer, lengthsPtr)
+        const processed = __getInt32Array(out)
 
         //free memory
-        this.asModule.freeArray(lengthsPtr)
-        this.asModule.freeArray(pointer)
+        __release(lengthsPtr)
+        __release(pointer)
 
         // TODO: remove this. @see https://github.com/ipfs/js-ipfs/issues/2118#issuecomment-497722625
         // clean extra 0s in the array
