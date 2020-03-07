@@ -1,5 +1,5 @@
 const Benchmark = require('benchmark')
-// const Rabin = require('rabin')
+const Rabin = require('rabin')
 const RabinWasm = require('../cli/rabin-stream')
 const RabinJs = require('./rabin-pure')
 const randomStream = require('iso-random-stream')
@@ -7,16 +7,16 @@ const suite = new Benchmark.Suite();
 
 // add tests
 suite
-// .add('native rabin', {
-//   defer: true,
-//   fn(deferred) {
-//     const rabin = new Rabin()
-//     const data = randomStream(100 * 1000 * 1024)
-//     data.pipe(rabin)
-//     rabin.on('data', () => {})
-//     rabin.on('end',  () => deferred.resolve())
-//   }
-//  })
+.add('native rabin', {
+  defer: true,
+  fn(deferred) {
+    const rabin = new Rabin()
+    const data = randomStream(100 * 1000 * 1024)
+    data.pipe(rabin)
+    rabin.on('data', () => {})
+    rabin.on('end',  () => deferred.resolve())
+  }
+ })
 .add('wasm rabin', {
   defer: true,
   fn(deferred) {

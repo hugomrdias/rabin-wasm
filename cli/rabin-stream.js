@@ -65,7 +65,7 @@ RabinStream.prototype._process = function (cb) {
 
   this.pending = []
 
-  debug('chunks', sizes)
+  debug('chunks', sizes.buffer.byteLength)
 
   for (var i = 0; i < sizes.length; i++) {
     var size = sizes[i]
