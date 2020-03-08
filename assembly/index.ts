@@ -1,8 +1,11 @@
-export const Int32Array_ID = idof<Int32Array>();
+/// <reference path="../node_modules/@as-pect/assembly/types/as-pect.d.ts" />
+export const Int32Array_ID = idof<Array<i32>>();
 export const Uint8Array_ID = idof<Uint8Array>();
 
+const POLYNOMIAL_DEGREE = 53;
+const POLYNOMIAL_SHIFT = POLYNOMIAL_DEGREE - 8;
 
-let tables_initialized: bool = false
+let tables_initialized = false
 
 const modTable = new Uint64Array(256)
 const outTable = new Uint64Array(256)
@@ -21,13 +24,11 @@ export function degree(polynom: u64): i32 {
   return -1;
 }
 
-// Mod calculates the remainder of x divided by p.
 @inline
 export function mod(x: u64,  p: u64): u64 {
-  while (degree(x) >= degree(p)) {
-      var shift = degree(x) - degree(p);
-
-      x = x ^ (p << shift);
+  var shift: i32;
+  while ((shift = degree(x) - degree(p)) >= 0) {
+    x ^= p << shift;
   }
   return x;
 }
@@ -42,17 +43,6 @@ function append_byte(hash: u64, b: u8, pol: u64): u64 {
 
 @inline
 function calc_tables(h: Rabin): void {
-  // calculate table for sliding out bytes. The byte to slide out is used as
-  // the index for the table, the value contains the following:
-  // out_table[b] = Hash(b || 0 ||        ...        || 0)
-  //                          \ windowsize-1 zero bytes /
-  // To slide out byte b_0 for window size w with known hash
-  // H := H(b_0 || ... || b_w), it is sufficient to add out_table[b_0]:
-  //    H(b_0 || ... || b_w) + H(b_0 || 0 || ... || 0)
-  //  = H(b_0 + b_0 || b_1 + 0 || ... || b_w + 0)
-  //  = H(    0     || b_1 || ...     || b_w)
-  //
-  // Afterwards a new byte can be shifted in.
   for (let b = 0; b < 256; b++) {
       let hash: u64 = 0;
 
@@ -63,16 +53,8 @@ function calc_tables(h: Rabin): void {
       unchecked(outTable[b] = hash);
   }
 
-  // calculate table for reduction mod Polynomial
   var k = <u64>degree(h.polynomial);
   for (var b = 0; b < 256; b++) {
-      // mod_table[b] = A | B, where A = (b(x) * x^k mod pol) and  B = b(x) * x^k
-      //
-      // The 8 bits above deg(Polynomial) determine what happens next and so
-      // these bits are used as a lookup to this table. The value is split in
-      // two parts: Part A contains the result of the modulus operation, part
-      // B is used to cancel out the 8 top bits so that one XOR operation is
-      // enough to reduce modulo Polynomial
       const bk = (<u64>b) << k;
       unchecked(modTable[b] = mod(bk, h.polynomial) | bk);
   }
@@ -81,7 +63,7 @@ function calc_tables(h: Rabin): void {
 @inline
 function rabin_append(h: Rabin,  b: usize): void {
   var digest = h.digest
-  var index = <u8>(digest >> h.polynomial_shift)
+  var index = <u8>(digest >> POLYNOMIAL_SHIFT)
 
   h.digest = ((digest << 8) | <u64>b) ^ unchecked(modTable[index]);
 }
@@ -130,6 +112,7 @@ function rabin_next_chunk(h: Rabin, buf: usize, len: i32): i32 {
   return -1;
 }
 
+@inline
 function rabin_init(h: Rabin): Rabin {
   if (!tables_initialized) {
       calc_tables(h);
@@ -155,34 +138,26 @@ export class Rabin {
   chunk_length: u64
   chunk_cut_fingerprint: u64
   polynomial: u64
-  polynomial_degree: u64
-  polynomial_shift: u64
-  average_bits: u64
   minsize: u64
   maxsize: u64
   mask: u64
 
   constructor(average_bits: u32, minsize: u32, maxsize: u32, window_size: i32) {
-    this.average_bits = <u64>average_bits
     this.minsize = <u64>minsize
     this.maxsize = <u64>maxsize
     this.window = new Uint8Array(window_size)
     this.window_size = window_size
-
-    // hardcoded
-    this.mask = (1<<this.average_bits)-1
+    this.mask = (1 <<< u64>average_bits) - 1
     this.polynomial = 0x3DA3358B4DC173
-    this.polynomial_degree = 53
-    this.polynomial_shift = this.polynomial_degree-8
 
     rabin_init(this)
   }
 
-  fingerprint(buf: Uint8Array, lengths: Int32Array): Int32Array {
+  fingerprint(buf: Uint8Array, lengths: Array<i32>): Array<i32> {
+    let idx = 0;
     let len = buf.length;
-    let chunk_idx = 0;
     let ptr = buf.dataStart
-    while (1) {
+    while (true) {
       var remaining = rabin_next_chunk(this, ptr, len);
       if (remaining < 0) {
         break;
@@ -190,8 +165,8 @@ export class Rabin {
 
       len -= remaining;
       ptr += remaining;
-      let c = chunk_idx++
-      unchecked(lengths[c] = <i32>this.chunk_length)
+      let c = idx++
+      lengths.push(<i32>this.chunk_length)
     }
     return lengths
   }

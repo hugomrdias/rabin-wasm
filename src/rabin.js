@@ -9,7 +9,7 @@ class Rabin {
      * @param {number} [bits=12]
      * @param {number} [min=8 * 1024]
      * @param {number} [max=32 * 1024]
-     * @param { import("./../dist/rabin").default } asModule
+     * @param { import("./../dist/rabin-wasm") } asModule
      * @memberof Rabin
      */
     constructor(bits = 12, min = 8 * 1024, max = 32 * 1024, windowSize = 64, asModule) {
@@ -37,27 +37,17 @@ class Rabin {
             Uint8Array_ID 
         } = this.asModule
 
-        const lengths = new Int32Array(Math.ceil(buf.length/this.min))
+        const lengths = new Array(Math.ceil(buf.length/this.min))
         const lengthsPtr = __retain(__allocArray(Int32Array_ID, lengths))
         const pointer = __retain(__allocArray(Uint8Array_ID, buf))
 
-        // run finderprint
         const out = this.rabin.fingerprint(pointer, lengthsPtr)
         const processed = __getInt32Array(out)
 
-        //free memory
         __release(lengthsPtr)
         __release(pointer)
 
-        // TODO: remove this. @see https://github.com/ipfs/js-ipfs/issues/2118#issuecomment-497722625
-        // clean extra 0s in the array
-        const cleanArr = []
-        for (let i = 0; i < processed.length; i++) {
-            if(processed[i] === 0) break
-            cleanArr[i] = processed[i];
-        }
-
-        return cleanArr
+        return processed
     }
 }
 
