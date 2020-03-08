@@ -37,7 +37,7 @@ class Rabin {
             Uint8Array_ID 
         } = this.asModule
 
-        const lengths = new Array(Math.ceil(buf.length/this.min))
+        const lengths = new Int32Array(Math.ceil(buf.length/this.min))
         const lengthsPtr = __retain(__allocArray(Int32Array_ID, lengths))
         const pointer = __retain(__allocArray(Uint8Array_ID, buf))
 
@@ -47,7 +47,13 @@ class Rabin {
         __release(lengthsPtr)
         __release(pointer)
 
-        return processed
+        const cleanArr = []	
+        for (let i = 0; i < processed.length; i++) {	
+            if(processed[i] === 0) break	
+            cleanArr[i] = processed[i];	
+        }	
+
+        return cleanArr
     }
 }
 
