@@ -46,8 +46,8 @@ class Rabin {
         const out = this.rabin.fingerprint(pointer, lengthsPtr)
         const processed = __getInt32Array(out)
 
-        __release(lengthsPtr)
         __release(pointer)
+        __release(lengthsPtr)
 
         const cleanArr = []	
         for (let i = 0; i < processed.length; i++) {	
