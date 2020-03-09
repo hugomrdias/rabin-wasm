@@ -23,7 +23,7 @@ describe("rabin degree", (): void => {
 
     log(out)
     const expected = new Int32Array(1)
-    expected[0] = 256
+    expected[0] = 16
     expect(out[0]).toBe(expected[0])
   });
 

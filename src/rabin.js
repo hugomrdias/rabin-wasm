@@ -6,18 +6,20 @@
 class Rabin {
     /**
      * Creates an instance of Rabin.
+     * @param { import("./../dist/rabin-wasm") } asModule
      * @param {number} [bits=12]
      * @param {number} [min=8 * 1024]
      * @param {number} [max=32 * 1024]
-     * @param { import("./../dist/rabin-wasm") } asModule
+     * @param {number} polynomial
      * @memberof Rabin
      */
-    constructor(bits = 12, min = 8 * 1024, max = 32 * 1024, windowSize = 64, asModule) {
+    constructor(asModule, bits = 12, min = 8 * 1024, max = 32 * 1024, windowSize = 64, polynomial) {
         this.bits = bits
         this.min = min
         this.max = max
         this.asModule = asModule
-        this.rabin = new asModule.Rabin(bits, min, max, windowSize)
+        this.rabin = new asModule.Rabin(bits, min, max, windowSize, polynomial)
+        this.polynomial = polynomial
     }
 
     /**

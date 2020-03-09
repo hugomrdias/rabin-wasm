@@ -1,9 +1,9 @@
 const Rabin = require('./rabin')
 const getRabin = require('../dist/rabin-wasm.node.js')
 
-const create = async (bits, min, max, windowSize) => {
+const create = async (avg, min, max, windowSize, polynomial) => {
     const compiled = await getRabin()
-    return new Rabin(bits, min, max, windowSize, compiled)
+    return new Rabin(compiled, avg, min, max, windowSize, polynomial)
 }
 
 module.exports = {
