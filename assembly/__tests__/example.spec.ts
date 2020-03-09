@@ -14,16 +14,16 @@ describe("rabin degree", (): void => {
   });
 
   it("fingerprint", (): void => {
-    let r = new Rabin(12, 1 * 128, 2 * 128, 64)
+    let r = new Rabin(124, 1 * 8, 2 * 8, 64)
     let file = new Uint8Array(1024);
     for (let i  = 0; i < file.length; i++) {
       file[i] = <u32>getRandomArbitrary(128, 8888)
     }
-    const out = r.fingerprint(file, new Array<i32>())
+    const out = r.fingerprint(file, new Int32Array(file.length/128))
 
     log(out)
     const expected = new Int32Array(1)
-    expected[0] = 256
+    expected[0] = 16
     expect(out[0]).toBe(expected[0])
   });
 

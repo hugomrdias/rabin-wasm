@@ -24,7 +24,7 @@
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
     "build": "asc assembly/index.ts -b dist/rabin.wasm -d dist/rabin-wasm.d.ts --runtime full --sourceMap --validate -O3 --noAssert && ./tools/wasm2js dist/rabin.wasm -o dist/rabin-wasm.js && browserify src/index.js -s Rabin -o dist/rabin.umd.js",
     "size": "size-limit dist/rabin.umd.js",
-    "test": "asp --nortrace",
+    "test": "asp --nortrace && yarn build && npx tape test/test.js",
     "prepublishOnly": "npm run build"
   },
   "repository": {
@@ -45,10 +45,12 @@
     "assemblyscript": "^0.9.2",
     "benchmark": "^2.1.4",
     "browserify": "^16.3.0",
+    "buffer": "^5.5.0",
     "iso-random-stream": "^1.1.0",
     "long": "^4.0.0",
     "np": "^6.2.0",
     "rabin": "^2.0.0",
-    "size-limit": "^4.2.1"
+    "size-limit": "^4.2.1",
+    "tape": "^4.13.2"
   }
 }

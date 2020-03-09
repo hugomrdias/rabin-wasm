@@ -1,5 +1,5 @@
 /// <reference path="../node_modules/@as-pect/assembly/types/as-pect.d.ts" />
-export const Int32Array_ID = idof<Array<i32>>();
+export const Int32Array_ID = idof<Int32Array>();
 export const Uint8Array_ID = idof<Uint8Array>();
 
 const POLYNOMIAL_DEGREE = 53;
@@ -27,7 +27,8 @@ export function degree(polynom: u64): i32 {
 @inline
 export function mod(x: u64,  p: u64): u64 {
   var shift: i32;
-  while ((shift = degree(x) - degree(p)) >= 0) {
+  let dp = degree(p);
+  while ((shift = degree(x) - dp) >= 0) {
     x ^= p << shift;
   }
   return x;
@@ -147,13 +148,13 @@ export class Rabin {
     this.maxsize = <u64>maxsize
     this.window = new Uint8Array(window_size)
     this.window_size = window_size
-    this.mask = (1 <<< u64>average_bits) - 1
+    this.mask = (1 << average_bits) - 1
     this.polynomial = 0x3DA3358B4DC173
 
     rabin_init(this)
   }
 
-  fingerprint(buf: Uint8Array, lengths: Array<i32>): Array<i32> {
+  fingerprint(buf: Uint8Array, lengths: Int32Array): Int32Array {
     let idx = 0;
     let len = buf.length;
     let ptr = buf.dataStart
@@ -166,7 +167,8 @@ export class Rabin {
       len -= remaining;
       ptr += remaining;
       let c = idx++
-      lengths.push(<i32>this.chunk_length)
+      // lengths.push(<i32>this.chunk_length)
+      unchecked(lengths[c] = <i32>this.chunk_length)
     }
     return lengths
   }
