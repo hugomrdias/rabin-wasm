@@ -18,7 +18,7 @@ export function degree(polynom: u64): i32 {
 
 @inline
 export function mod(x: u64,  p: u64): u64 {
-  var shift: i32;
+  let shift: i32;
   let dp = degree(p);
   while ((shift = degree(x) - dp) >= 0) {
     x ^= p << shift;
@@ -46,24 +46,24 @@ function calc_tables(h: Rabin): void {
     unchecked(outTable[b] = hash);
   }
 
-  var k = <u64>degree(h.polynomial);
-  for (var b = 0; b < 256; b++) {
-      const bk = (<u64>b) << k;
-      unchecked(modTable[b] = mod(bk, h.polynomial) | bk);
+  let k = <u64>degree(h.polynomial);
+  for (let b = 0; b < 256; b++) {
+    const bk = (<u64>b) << k;
+    unchecked(modTable[b] = mod(bk, h.polynomial) | bk);
   }
 }
 
 @inline
 function rabin_append(h: Rabin, b: u8): void {
-  var digest = h.digest;
-  var index  = i32(digest >> POLYNOMIAL_SHIFT);
+  let digest = h.digest;
+  let index  = i32(digest >> POLYNOMIAL_SHIFT);
 
   h.digest = ((digest << 8) | <u64>b) ^ unchecked(modTable[index]);
 }
 
 @inline
 function rabin_slide(h: Rabin, b: u8): void {
-  var out = h.window[h.wpos];
+  let out = h.window[h.wpos];
   unchecked(h.window[h.wpos] = b);
   h.digest ^= unchecked(outTable[out]);
   h.wpos = (h.wpos + 1) % h.window_size;
@@ -151,7 +151,7 @@ export class Rabin {
     let len = buf.length;
     let ptr = buf.dataStart;
     while (true) {
-      var remaining = rabin_next_chunk(this, ptr, len);
+      let remaining = rabin_next_chunk(this, ptr, len);
       if (remaining < 0) {
         break;
       }
