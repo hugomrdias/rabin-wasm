@@ -8,11 +8,11 @@ function getRandomArbitrary(min: f64, max: f64): f64 {
 
 describe("rabin degree", () => {
   it("degree should be truthy", () => {
-    expect<u64>(degree(0)).toBe(-1, "42 is the meaning of life.");
+    expect(degree(0)).toBe(-1, "42 is the meaning of life.");
   });
 
   it("mod should be truthy", () => {
-    expect<u64>(mod((<u64>0) << 0x3DA3358B4DC173, 0x3DA3358B4DC173)).toBe(0, "42 is the meaning of life.");
+    expect(mod((<u64>0) << 0x3DA3358B4DC173, 0x3DA3358B4DC173)).toBe(0, "42 is the meaning of life.");
   });
 
   it("fingerprint", () => {
