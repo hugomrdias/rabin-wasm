@@ -32,7 +32,7 @@
     "url": "git+https://github.com/hugomrdias/rabin-wasm.git"
   },
   "dependencies": {
-    "@assemblyscript/loader": "^0.9.2",
+    "@assemblyscript/loader": "^0.9.4",
     "bl": "^4.0.1",
     "debug": "^4.1.1",
     "minimist": "^1.2.0",
@@ -42,7 +42,7 @@
   "devDependencies": {
     "@as-pect/cli": "^2.8.1",
     "@size-limit/preset-small-lib": "^4.2.1",
-    "assemblyscript": "^0.9.2",
+    "assemblyscript": "^0.9.4",
     "benchmark": "^2.1.4",
     "browserify": "^16.3.0",
     "buffer": "^5.5.0",
