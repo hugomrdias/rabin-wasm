@@ -7,20 +7,20 @@ const suite = new Benchmark.Suite();
 
 // add tests
 suite
-.add('native rabin', { 
+.add('native rabin', {
     defer: true,
-    fn:function(deferred) {
+    fn(deferred) {
         const rabin = new Rabin()
         const data = randomStream(100 * 1000 * 1024)
         data.pipe(rabin)
         rabin.on('data', () => {})
-    
+
         rabin.on('end', () => deferred.resolve())
     }
  })
-.add('wasm rabin', { 
+.add('wasm rabin', {
     defer: true,
-    fn: function(deferred) {
+    fn(deferred) {
         const rabin = new RabinWasm()
         const data = randomStream(100 * 1000 * 1024)
         data.pipe(rabin)
@@ -28,9 +28,9 @@ suite
         rabin.on('end', () => deferred.resolve())
     }
 })
-// .add('js rabin', { 
+// .add('js rabin', {
 //     defer: true,
-//     fn: function(deferred) {
+//     fn(deferred) {
 //         const rabin = new RabinJs()
 //         const data = randomStream(100 * 1000 * 1024)
 //         data.pipe(rabin)

@@ -19,7 +19,7 @@ function RabinStream (opts = {}) {
   var avgBits = +opts.bits || 12
   var min = +opts.min || 8 * 1024
   var max = +opts.max || 32 * 1024
-  this.rabin = new Rabin(avgBits, min, max, 64, compiled)
+  this.rabin = new Rabin(compiled, avgBits, min, max, 64)
   this.nextCb = null
   this.buffers = new BufferList()
   this.pending = []
@@ -63,7 +63,7 @@ RabinStream.prototype._write = function (data, enc, cb) {
 RabinStream.prototype._process = function (cb) {
   var drained = true
   var sizes = this.rabin.fingerprint(Buffer.concat(this.pending))
-  
+
   this.pending = []
 
   debug('chunks', sizes)
