@@ -30,13 +30,13 @@ class Rabin {
      * @memberof Rabin
      */
     fingerprint(buf) {
-        const { 
+        const {
             __retain,
             __release,
-            __allocArray, 
-            __getInt32Array, 
-            Int32Array_ID, 
-            Uint8Array_ID 
+            __allocArray,
+            __getInt32Array,
+            Int32Array_ID,
+            Uint8Array_ID
         } = this.asModule
 
         const lengths = new Int32Array(Math.ceil(buf.length/this.min))
@@ -49,13 +49,8 @@ class Rabin {
         __release(pointer)
         __release(lengthsPtr)
 
-        const cleanArr = []	
-        for (let i = 0; i < processed.length; i++) {	
-            if(processed[i] === 0) break	
-            cleanArr[i] = processed[i];	
-        }	
-
-        return cleanArr
+        const end = processed.indexOf(0);
+        return end >= 0 ? processed.subarray(0, end) : processed;
     }
 }
 
