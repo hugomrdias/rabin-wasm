@@ -45,7 +45,7 @@
     "assemblyscript": "^0.9.4",
     "benchmark": "^2.1.4",
     "browserify": "^16.3.0",
-    "buffer": "^5.5.0",
+    "buffer": "^6.0.1",
     "iso-random-stream": "^1.1.0",
     "long": "^4.0.0",
     "np": "^6.2.0",
