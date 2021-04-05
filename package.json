@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.9.4",
-    "bl": "^4.0.1",
+    "bl": "^5.0.0",
     "debug": "^4.1.1",
     "minimist": "^1.2.0",
     "node-fetch": "^2.6.0",
