@@ -44,7 +44,7 @@
     "@size-limit/preset-small-lib": "^4.2.1",
     "assemblyscript": "^0.9.4",
     "benchmark": "^2.1.4",
-    "browserify": "^16.3.0",
+    "browserify": "^17.0.0",
     "buffer": "^6.0.3",
     "iso-random-stream": "^2.0.0",
     "long": "^4.0.0",
