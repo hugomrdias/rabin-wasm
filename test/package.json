@@ -1,0 +1,10 @@
+{
+  "name": "rabin-wasm-test",
+  "type": "module",
+  "scripts": {
+    "test": "tape ./test.js"
+  },
+  "devDependencies": {
+    "tape": "^4.13.2"
+  }
+}
