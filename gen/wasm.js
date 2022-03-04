@@ -100,16 +100,14 @@ export function cut(rabin, bytes) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
         _assertClass(rabin, Rabin);
-        var ptr0 = rabin.ptr;
-        rabin.ptr = 0;
-        var ptr1 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
-        var len1 = WASM_VECTOR_LEN;
-        wasm.cut(retptr, ptr0, ptr1, len1);
+        var ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+        var len0 = WASM_VECTOR_LEN;
+        wasm.cut(retptr, rabin.ptr, ptr0, len0);
         var r0 = getInt32Memory0()[retptr / 4 + 0];
         var r1 = getInt32Memory0()[retptr / 4 + 1];
-        var v2 = getArrayI32FromWasm0(r0, r1).slice();
+        var v1 = getArrayI32FromWasm0(r0, r1).slice();
         wasm.__wbindgen_free(r0, r1 * 4);
-        return v2;
+        return v1;
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
     }
