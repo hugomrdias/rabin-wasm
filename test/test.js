@@ -3,6 +3,7 @@
 import { encodeUTF8, read } from "./util.js"
 import { create, cut, withPolynom } from "../lib.js"
 import { assert } from "chai"
+import * as FZSTD from "fzstd"
 
 describe("rabin", () => {
   it("chunks for 1MiB.txt", async () => {
@@ -47,16 +48,16 @@ describe("rabin", () => {
   })
 
   it("chunks for rand_5MiB.zst", async () => {
-    const file = await read("./rand_5MiB.uncompressed.zst")
+    const bytes = FZSTD.decompress(await read("./rand_5MiB.zst"))
     const r = await withPolynom(17437180132763653n, 524288, 262144, 1048576, 16)
-    const sizes = cut(r, file)
+    const sizes = cut(r, bytes)
     assert.deepEqual(
       [...sizes],
       [895059, 686255, 467859, 626819, 280748, 310603, 734239, 499556]
     )
 
     assert.deepEqual(
-      file.byteLength,
+      bytes.byteLength,
       sizes.reduce((t, n) => t + n, 741742)
     )
   })

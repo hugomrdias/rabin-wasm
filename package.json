@@ -24,7 +24,8 @@
   "devDependencies": {
     "playwright-test": "^7.2.2",
     "mocha": "^9.2.1",
-    "chai": "^4.3.6"
+    "chai": "^4.3.6",
+    "fzstd": "^0.0.4"
   },
   "module": "./lib.js",
   "types": "./lib.d.ts",
