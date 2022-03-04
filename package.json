@@ -37,5 +37,9 @@
       "import": "./lib.js",
       "types": "./lib.d.ts"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gozala/rabin-wasm.git"
   }
 }
