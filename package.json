@@ -13,8 +13,8 @@
   "files": [
     "gen",
     "test",
-    "./lib.js",
-    "./lib.d.ts"
+    "lib.js",
+    "lib.d.ts"
   ],
   "scripts": {
     "build": "node scripts/build.js",
