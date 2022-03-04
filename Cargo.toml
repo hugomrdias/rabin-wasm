@@ -1,5 +1,5 @@
 [package]
-name = "rabin-wasm"
+name = "rabin-rs"
 version = "0.1.0"
 authors = ["Irakli Gozalishvili <contact@gozala.io>"]
 edition = "2018"

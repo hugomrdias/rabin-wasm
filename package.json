@@ -1,0 +1,40 @@
+{
+  "name": "rabin-rs",
+  "version": "0.1.0",
+  "description": "Rabin chunker for IPFS implementation in Rust",
+  "keywords": [
+    "rabin",
+    "wasm",
+    "ipfs",
+    "chunker"
+  ],
+  "author": "Irakli Gozalshvili <dev@gozala.io> (https://gozala.io/work)",
+  "license": "(Apache-2.0 AND MIT)",
+  "files": [
+    "gen",
+    "test",
+    "./lib.js",
+    "./lib.d.ts"
+  ],
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test:node": "mocha ./test/test.js",
+    "test:web": "playwright-test ./test/test.js"
+  },
+  "devDependencies": {
+    "playwright-test": "^7.2.2",
+    "mocha": "^9.2.1",
+    "chai": "^4.3.6"
+  },
+  "module": "./lib.js",
+  "types": "./lib.d.ts",
+  "sideEffects": false,
+  "type": "module",
+  "main": "./lib.js",
+  "exports": {
+    ".": {
+      "import": "./lib.js",
+      "types": "./lib.d.ts"
+    }
+  }
+}

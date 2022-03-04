@@ -1,54 +1,63 @@
 "use strict"
 
-import test from "tape"
-import fs from "fs"
-import { Buffer } from "buffer"
-import { create, cut, new_with_polynom } from "../pkg/rabin_wasm_bg.js"
+import { encodeUTF8, read } from "./util.js"
+import { create, cut, withPolynom } from "../lib.js"
+import { assert } from "chai"
 
-test("chunks for 1MiB.txt", t => {
-  const buf = fs.readFileSync(new URL("./1MiB.txt", import.meta.url))
-  const file = Buffer.concat([buf, Buffer.from("hello")])
-  const r = create(18, 87381.33333333333, 393216, 64)
-  const sizes = cut(r, file)
-  t.deepEqual([...sizes], [366598, 239921, 260915])
-  t.end()
-})
+describe("rabin", () => {
+  it("chunks for 1MiB.txt", async () => {
+    const prefix = await read("./1MiB.txt")
+    const suffix = encodeUTF8("hello")
+    const bytes = new Uint8Array(prefix.byteLength + suffix.byteLength)
+    bytes.set(prefix, 0)
+    bytes.set(suffix, prefix.byteLength)
 
-test("shoud be empty", t => {
-  const b1 = Buffer.alloc(10 * 256)
-  b1.fill("a")
-  const r = create(8, 18, 262144, 64)
-  const sizes = cut(r, b1)
-  t.deepEqual([...sizes], [])
-  t.end()
-})
+    const rabin = await create(18, 87381.33333333333, 393216, 64)
+    const sizes = cut(rabin, bytes)
+    assert.deepEqual([...sizes], [366598, 239921, 260915])
+  })
 
-test("shoud respect window size", t => {
-  const b1 = Buffer.alloc(2 * 256)
-  const b2 = Buffer.alloc(1 * 119)
-  const b3 = Buffer.alloc(5 * 256)
+  it("shoud be empty", async () => {
+    const b1 = new Uint8Array(10 * 256)
+    b1.fill("a".charCodeAt(0))
+    const r = await create(8, 18, 262144, 64)
+    const sizes = cut(r, b1)
+    assert.deepEqual([...sizes], [])
+  })
 
-  b1.fill("a")
-  b2.fill("b")
-  b3.fill("c")
-  const r = create(6, 48, 192, 64)
-  const sizes = cut(r, Buffer.concat([b1, b2, b3]))
-  t.deepEqual(sizes, [192, 192, 192, 65, 192, 192, 192, 192, 192, 192])
-  t.end()
-})
+  it("shoud respect window size", async () => {
+    const b1 = new Uint8Array(2 * 256)
+    const b2 = new Uint8Array(1 * 119)
+    const b3 = new Uint8Array(5 * 256)
 
-// TODO fix passing polynomial https://github.com/AssemblyScript/assemblyscript/issues/162#issuecomment-403870965
-// https://github.com/whyrusleeping/chunker/blob/master/chunker.go#L16
-// https://github.com/ipfs/go-ipfs-chunker/blob/master/rabin.go#L11
-// https://github.com/ribasushi/temporary_tesdata_2020_03/blob/master/leaf_chunklists_random_source.csv
-// needs to be a BigInt and on the AS side needs to be a i64
-test.skip("chunks for rand_5MiB.zst", t => {
-  const file = fs.readFileSync(new URL("./rand_5MiB.zst", import.meta.url))
-  const r = new_with_polynom(17437180132763653n, 524288, 262144, 1048576, 16)
-  const sizes = cut(r, file)
-  t.deepEqual(
-    [...sizes],
-    [895059, 686255, 467859, 626819, 280748, 310603, 734239, 499556, 741742]
-  )
-  t.end()
+    b1.fill("a".charCodeAt(0))
+    b2.fill("b".charCodeAt(0))
+    b3.fill("c".charCodeAt(0))
+    const buffer = new Uint8Array(b1.byteLength + b2.byteLength + b3.byteLength)
+    buffer.set(b1, 0)
+    buffer.set(b2, b1.byteLength)
+    buffer.set(b3, b1.byteLength + b2.byteLength)
+
+    const rabin = await create(6, 48, 192, 64)
+    const sizes = cut(rabin, buffer)
+    assert.deepEqual(
+      [...sizes],
+      [192, 192, 192, 65, 192, 192, 192, 192, 192, 192]
+    )
+  })
+
+  it("chunks for rand_5MiB.zst", async () => {
+    const file = await read("./rand_5MiB.uncompressed.zst")
+    const r = await withPolynom(17437180132763653n, 524288, 262144, 1048576, 16)
+    const sizes = cut(r, file)
+    assert.deepEqual(
+      [...sizes],
+      [895059, 686255, 467859, 626819, 280748, 310603, 734239, 499556]
+    )
+
+    assert.deepEqual(
+      file.byteLength,
+      sizes.reduce((t, n) => t + n, 741742)
+    )
+  })
 })
