@@ -61,4 +61,17 @@ describe("rabin", () => {
       sizes.reduce((t, n) => t + n, 741742)
     )
   })
+
+  it("is stateless", async () => {
+    const prefix = await read("./1MiB.txt")
+    const suffix = encodeUTF8("hello")
+    const bytes = new Uint8Array(prefix.byteLength + suffix.byteLength)
+    bytes.set(prefix, 0)
+    bytes.set(suffix, prefix.byteLength)
+
+    const r = await create(18, 87381.33333333333, 393216, 64)
+
+    assert.deepEqual([...cut(r, bytes.slice(0, 736976))], [366598, 239921])
+    assert.deepEqual([...cut(r, bytes)], [366598, 239921, 260915])
+  })
 })

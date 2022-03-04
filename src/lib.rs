@@ -28,6 +28,6 @@ pub fn new_with_polynom(
 }
 
 #[wasm_bindgen]
-pub fn cut(mut rabin: Rabin, bytes: &[u8]) -> Vec<i32> {
+pub fn cut(rabin: &mut Rabin, bytes: &[u8]) -> Vec<i32> {
     rabin.cuts(bytes)
 }
